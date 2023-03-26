@@ -10,7 +10,7 @@ export default function Home() {
         <meta name="description" content="Share Your Seat marketplace" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <main className="">
+      <main>
         <Intro />
         <Events />
       </main>
