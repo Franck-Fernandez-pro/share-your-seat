@@ -4,15 +4,18 @@ import { FC } from 'react';
 interface Props {}
 
 const CreateEventForm: FC<Props> = ({}) => {
-  const { props: eventNameField, setValue: setEventName } =
+  const { props: nameField, setValue: setName } = useInput<string>('');
+  const { props: descriptionField, setValue: setDescription } =
     useInput<string>('');
-  const { props: eventDescriptionField, setValue: setEventDescription } =
-    useInput<string>('');
+  const { props: dateField, setValue: setDate } = useInput<string>('');
+  const { props: addressField, setValue: setAddress } = useInput<string>('');
 
   function handleSubmit() {
     console.group('handleSubmit');
-    console.log('eventName', eventNameField.value);
-    console.log('eventDescription', eventDescriptionField.value);
+    console.log('name', nameField.value);
+    console.log('descriptionField', descriptionField.value);
+    console.log('date', dateField.value);
+    console.log('address', addressField.value);
     console.groupEnd();
   }
 
@@ -27,7 +30,7 @@ const CreateEventForm: FC<Props> = ({}) => {
             className="input input-bordered"
             type="text"
             placeholder="Jeux olympiques"
-            {...eventNameField}
+            {...nameField}
           />
         </div>
         <div className="form-control">
@@ -37,7 +40,28 @@ const CreateEventForm: FC<Props> = ({}) => {
           <textarea
             className="textarea textarea-bordered textarea-lg"
             placeholder="En 2024, ..."
-            {...eventDescriptionField}
+            {...descriptionField}
+          />
+        </div>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Date</span>
+          </label>
+          <input
+            className="input input-bordered"
+            type="datetime-local"
+            {...dateField}
+          />
+        </div>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Adresse</span>
+          </label>
+          <input
+            className="input input-bordered"
+            type="text"
+            placeholder="12 rue..."
+            {...addressField}
           />
         </div>
 
