@@ -5,27 +5,27 @@ const EVENTS = [
   {
     title: 'Event',
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    href: '/',
+    id: 1,
   },
   {
     title: 'Event',
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    href: '/',
+    id: 2,
   },
   {
     title: 'Event',
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    href: '/',
+    id: 3,
   },
   {
     title: 'Event',
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    href: '/',
+    id: 4,
   },
   {
     title: 'Event',
     text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
-    href: '/',
+    id: 5,
   },
 ];
 
@@ -39,8 +39,13 @@ export default function Home() {
       </Head>
       <main className="">
         <section className="flex flex-wrap justify-center gap-5">
-          {EVENTS.map(({ text, title, href }, idx) => (
-            <EventCard key={idx} text={text} title={title} href={href} />
+          {EVENTS.map(({ text, title, id }, idx) => (
+            <EventCard
+              key={idx}
+              text={text}
+              title={title}
+              href={`event/${id}`}
+            />
           ))}
         </section>
       </main>
