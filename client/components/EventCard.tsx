@@ -1,11 +1,12 @@
-import { FC, MouseEvent } from 'react';
+import Link from 'next/link';
+import { FC } from 'react';
 
 interface Props {
   title: string;
   text: string;
   imgSrc?: string;
   btnText?: string;
-  onClick?: (e: MouseEvent<HTMLButtonElement>) => void;
+  href?: string;
 }
 
 const EventCard: FC<Props> = ({
@@ -13,7 +14,7 @@ const EventCard: FC<Props> = ({
   text = '',
   imgSrc = 'https://picsum.photos/1500/1000',
   btnText = 'En savoir plus',
-  onClick,
+  href = '/',
 }) => (
   <div className="card bg-base-100 w-80 shadow-xl">
     <figure>
@@ -22,11 +23,11 @@ const EventCard: FC<Props> = ({
     <div className="card-body">
       <h2 className="card-title">{title}</h2>
       <p>{text}</p>
-      {onClick && (
+      {href && (
         <div className="card-actions mt-5 justify-end">
-          <button className="btn btn-primary btn-sm" onClick={onClick}>
+          <Link className="btn btn-primary btn-sm" href={href}>
             {btnText}
-          </button>
+          </Link>
         </div>
       )}
     </div>
