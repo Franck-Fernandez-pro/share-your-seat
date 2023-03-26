@@ -6,6 +6,7 @@ export default function Home() {
       <Head>
         <title>Share Your Seat</title>
         <meta name="description" content="Share Your Seat marketplace" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <main className=""></main>
     </>
