@@ -5,7 +5,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 interface Props {}
 
 const Navbar: FC<Props> = ({}) => (
-  <div className="navbar bg-base-100">
+  <div className="navbar text-neutral-content sticky">
     <div className="navbar-start">
       <Link href="/" className="btn btn-ghost text-xl normal-case">
         Share Your Seat

@@ -5,7 +5,7 @@ interface Props {}
 
 const Intro: FC<Props> = ({}) => (
   <div
-    className="hero min-h-[730px]"
+    className="hero -mt-16 min-h-[800px]"
     style={{
       backgroundImage: `url("${HomeBGImage.src}")`,
     }}
