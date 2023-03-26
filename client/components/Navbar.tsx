@@ -19,7 +19,7 @@ const Navbar: FC<Props> = ({}) => (
       </ul> */}
     </div>
     <div className="navbar-end">
-      <ConnectButton />
+      <ConnectButton chainStatus="none" />
     </div>
   </div>
 );
