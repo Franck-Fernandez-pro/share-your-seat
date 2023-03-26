@@ -33,7 +33,7 @@ interface Props {}
 
 const Events: FC<Props> = ({}) => (
   <section id="events">
-    <h2 className="mx-auto my-20 text-center text-4xl font-extrabold md:text-6xl">
+    <h2 className="mx-auto my-20 text-center text-5xl font-extrabold">
       Événements
     </h2>
     <div className="flex flex-wrap justify-center gap-5">
