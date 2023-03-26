@@ -11,3 +11,4 @@
 - EthersJS
 - Wagmi
 - Vercel
+- Hardhat
