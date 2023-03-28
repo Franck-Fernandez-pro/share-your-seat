@@ -12,7 +12,7 @@ const Event: FC<Props> = ({}) => (
     </Head>
 
     <main>
-      <div className="hero bg-base-200 p-20">
+      <section id="create-event" className="hero bg-base-200 p-20">
         <div className="hero-content flex-row">
           <div className="text-center lg:text-left">
             <h1 className="text-5xl font-extrabold">Créer un événement</h1>
@@ -24,7 +24,7 @@ const Event: FC<Props> = ({}) => (
           </div>
           <CreateEventForm />
         </div>
-      </div>
+      </section>
 
       <Events />
     </main>

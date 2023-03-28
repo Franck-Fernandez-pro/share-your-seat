@@ -41,6 +41,12 @@ const Events: FC<Props> = ({}) => (
         <EventCard key={idx} text={text} title={title} href={`event/${id}`} />
       ))}
     </div>
+
+    <div className="my-10 flex justify-center">
+      <a href="/event#create-event" className="btn btn-primary">
+        Créer un événement
+      </a>
+    </div>
   </section>
 );
 
