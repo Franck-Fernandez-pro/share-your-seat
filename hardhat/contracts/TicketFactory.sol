@@ -34,18 +34,18 @@ contract TicketFactory {
     /// @param _eventName Name of ERC-1155 collection
     /// @param _uri URI resolving hosted metadata
     /// @param _ticketPrices Price array of ticket types
-    /// @param _ticketAmounts Price array of ticket types
+    /// @param _availableTickets Price array of ticket types
     function deployTicket(
         string memory _eventName,
         string memory _uri,
         uint16[] memory _ticketPrices,
-        uint16[] memory _ticketAmounts
+        uint16[] memory _availableTickets
     ) public returns (address) {
         TicketSFT t = new TicketSFT(
             _eventName,
             _uri,
             _ticketPrices,
-            _ticketAmounts
+            _availableTickets
         );
         tokens.push(t);
         indexToContract[tokens.length - 1] = address(t);

@@ -25,21 +25,21 @@ contract TicketSFT is ERC1155, Ownable {
     /// @param _eventName name of SFT collection
     /// @param _uri URI of metadatas
     /// @param _ticketPrices Ticket type prices
-    /// @param _ticketAmounts Ticket type amount
+    /// @param _availableTickets Ticket type amount
     constructor(
         string memory _eventName,
         string memory _uri,
         uint16[] memory _ticketPrices,
-        uint16[] memory _ticketAmounts
+        uint16[] memory _availableTickets
     ) ERC1155(_uri) {
         require(
-            _ticketPrices.length == _ticketAmounts.length,
+            _ticketPrices.length == _availableTickets.length,
             "Provided array have not same length"
         );
         require(bytes(_uri).length != 0, "_uri is empty");
         name = _eventName;
         baseMetadataURI = _uri;
-        availableTickets = _ticketAmounts;
+        availableTickets = _availableTickets;
         transferOwnership(tx.origin);
     }
 
