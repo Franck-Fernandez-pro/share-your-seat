@@ -11,9 +11,14 @@ import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
 /// @dev This contract is deployed by TicketFactory smart contract
 /// @dev You can use this contract to mint, transfer, sell, check data about an event (concert, match, theatre)
 contract TicketSFT is ERC1155, Ownable {
-    string public baseMetadataURI; // Token metadata URI as https://ipfs.io/HASH/
-    string public name; // Token name (Event name)
-    uint256[] public availableTickets; // Array of mintable tickets. Index is used as token id
+    // Token metadata URI as https://ipfs.io/HASH/
+    string public baseMetadataURI;
+
+    // Token name (Event name)
+    string public name;
+
+    // Array of mintable tickets. Index is used as token id
+    uint16[] public availableTickets;
 
     // :::::::::::::::::::::: CONSTRUCTOR ::::::::::::::::::::::
     /// @dev Executed when the factory calls its own deployTicket() function
@@ -24,8 +29,8 @@ contract TicketSFT is ERC1155, Ownable {
     constructor(
         string memory _eventName,
         string memory _uri,
-        uint256[] memory _ticketPrices,
-        uint256[] memory _ticketAmount
+        uint16[] memory _ticketPrices,
+        uint16[] memory _ticketAmount
     ) ERC1155(_uri) {
         require(
             _ticketPrices.length == _ticketAmount.length,
