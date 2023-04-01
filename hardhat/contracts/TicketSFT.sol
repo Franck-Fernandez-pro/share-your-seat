@@ -11,37 +11,31 @@ import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
 /// @dev This contract is deployed by TicketFactory smart contract
 /// @dev You can use this contract to mint, transfer, sell, check data about an event (concert, match, theatre)
 contract TicketSFT is ERC1155, Ownable {
-    struct Ticket {
-        string name;
-        uint8 ticketType;
-        uint16 amount;
-    }
     string public baseMetadataURI; // Token metadata URI as https://ipfs.io/HASH/
     string public name; // Token name (Event name)
-    Ticket[20] public tickets; // Array of tickets. Ticket id is the index in tickets array
+    uint256[] public availableTickets; // Array of mintable tickets. Index is used as token id
 
     // :::::::::::::::::::::: CONSTRUCTOR ::::::::::::::::::::::
     /// @dev Executed when the factory calls its own deployTicket() function
     /// @param _eventName name of SFT collection
     /// @param _uri URI of metadatas
-    /// Ticket types available for this collection
     /// @param _ticketPrices Ticket type prices
-    /// @param _ticketamount Ticket type amount
+    /// @param _ticketAmount Ticket type amount
     constructor(
         string memory _eventName,
         string memory _uri,
-        // string[] memory _ticketTypes,
         uint256[] memory _ticketPrices,
-        uint256[] memory _ticketamount
+        uint256[] memory _ticketAmount
     ) ERC1155(_uri) {
         require(
-            _ticketPrices.length == _ticketamount.length,
+            _ticketPrices.length == _ticketAmount.length,
             "Provided array have not same length"
         );
         require(bytes(_uri).length != 0, "_uri is empty");
         setURI(_uri);
-        baseMetadataURI = _uri;
         name = _eventName;
+        baseMetadataURI = _uri;
+        availableTickets = _ticketAmount;
         transferOwnership(tx.origin);
     }
 
