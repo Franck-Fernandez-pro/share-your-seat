@@ -32,7 +32,6 @@ contract TicketSFT is ERC1155, Ownable {
             "Provided array have not same length"
         );
         require(bytes(_uri).length != 0, "_uri is empty");
-        setURI(_uri);
         name = _eventName;
         baseMetadataURI = _uri;
         availableTickets = _ticketAmount;
@@ -54,12 +53,6 @@ contract TicketSFT is ERC1155, Ownable {
                     ".json"
                 )
             );
-    }
-
-    /// Used to change metadata, only owner access
-    /// @param _newuri new uri
-    function setURI(string memory _newuri) public onlyOwner {
-        _setURI(_newuri);
     }
 
     /// Mint token
