@@ -1,3 +1,4 @@
+import { AppContext, State } from '@/types/context';
 import { createContext } from 'react';
 
 export const initialState: State = {

@@ -1,3 +1,11 @@
+import { ActionType } from '@/contexts/TicketFactory';
+
+type TicketCreated = {
+  name: string;
+  owner: string;
+  contractAddr: string;
+};
+
 type State = {
   event: {
     TicketCreated: number[];
@@ -10,11 +18,7 @@ type AppContext = {
   dispatch: Dispatch<Action>;
 };
 
-enum ActionType {
-  ADD_EVENT = 'ADD_EVENT',
-}
-
 type Action = {
   type: ActionType;
-  payload: State;
+  payload: any;
 };
