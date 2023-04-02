@@ -8,6 +8,7 @@ import { polygon, polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '@/components/Layout';
+import { Provider } from '@/contexts/TicketFactory';
 
 const { chains, provider } = configureChains(
   [polygon, polygonMumbai],
@@ -29,9 +30,11 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={wagmiClient}>
       <RainbowKitProvider chains={chains}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Provider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Provider>
       </RainbowKitProvider>
     </WagmiConfig>
   );
