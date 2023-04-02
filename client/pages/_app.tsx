@@ -4,14 +4,14 @@ import type { AppProps } from 'next/app';
 
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { polygon, polygonMumbai } from 'wagmi/chains';
+import { hardhat, polygon, polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '@/components/Layout';
 import { Provider } from '@/contexts/TicketFactory';
 
 const { chains, provider } = configureChains(
-  [polygon, polygonMumbai],
+  [polygon, polygonMumbai, hardhat],
   [alchemyProvider({ apiKey: process.env.ALCHEMY_ID || '' }), publicProvider()]
 );
 
@@ -21,7 +21,7 @@ const { connectors } = getDefaultWallets({
 });
 
 const wagmiClient = createClient({
-  autoConnect: false,
+  autoConnect: true,
   connectors,
   provider,
 });
