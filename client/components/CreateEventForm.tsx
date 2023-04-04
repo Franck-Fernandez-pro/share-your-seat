@@ -5,23 +5,32 @@ interface Props {}
 
 const CreateEventForm: FC<Props> = ({}) => {
   const { props: nameField, setValue: setName } = useInput<string>('');
-  const { props: descriptionField, setValue: setDescription } =
+  const { props: CIDField, setValue: setCID } = useInput<string>('');
+  const { props: ticketPricesField, setValue: setTicketPrices } =
     useInput<string>('');
-  const { props: dateField, setValue: setDate } = useInput<string>('');
-  const { props: addressField, setValue: setAddress } = useInput<string>('');
+  const { props: availableTicketsField, setValue: setAvailableTickets } =
+    useInput<string>('');
 
   function handleSubmit() {
-    console.group('handleSubmit');
-    console.log('name', nameField.value);
-    console.log('descriptionField', descriptionField.value);
-    console.log('date', dateField.value);
-    console.log('address', addressField.value);
-    console.groupEnd();
+    const ticketPrices = ticketPricesField.value
+      .split(',')
+      .map((i) => parseInt(i));
+    const availableTickets = availableTicketsField.value
+      .split(',')
+      .map((i) => parseInt(i));
   }
 
   return (
-    <div className="card bg-base-100 w-full max-w-sm flex-shrink-0 shadow-2xl">
-      <div className="card-body">
+    <div className="p-10">
+      {/* <ApiKeysForm />
+      <div className="divider" />
+      <PinMetadata />
+      <div className="divider" /> */}
+
+      <div>
+        <h2 className="text-2xl font-bold">
+          Ajouter les informations de l'événement
+        </h2>
         <div className="form-control">
           <label className="label">
             <span className="label-text">Nom</span>
@@ -29,47 +38,52 @@ const CreateEventForm: FC<Props> = ({}) => {
           <input
             className="input input-bordered"
             type="text"
-            placeholder="Jeux olympiques"
+            required
             {...nameField}
           />
         </div>
+
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Description</span>
-          </label>
-          <textarea
-            className="textarea textarea-bordered textarea-lg"
-            placeholder="En 2024, ..."
-            {...descriptionField}
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Date</span>
-          </label>
-          <input
-            className="input input-bordered"
-            type="datetime-local"
-            {...dateField}
-          />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Adresse</span>
+            <span className="label-text">CID IPFS</span>
           </label>
           <input
             className="input input-bordered"
             type="text"
-            placeholder="12 rue..."
-            {...addressField}
+            required
+            {...CIDField}
           />
         </div>
 
-        <div className="form-control mt-6">
-          <button className="btn btn-primary" onClick={handleSubmit}>
-            Créer
-          </button>
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Prix des tickets</span>
+          </label>
+          <input
+            className="input input-bordered"
+            type="text"
+            placeholder="10,15,50"
+            required
+            {...ticketPricesField}
+          />
         </div>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Places disponibles par ticket</span>
+          </label>
+          <input
+            className="input input-bordered"
+            type="text"
+            placeholder="100,50,20"
+            required
+            {...availableTicketsField}
+          />
+        </div>
+
+        <button className="btn btn-primary mt-5" onClick={handleSubmit}>
+          Créer
+        </button>
       </div>
     </div>
   );
