@@ -8,7 +8,7 @@ type TicketCreated = {
 
 type State = {
   event: {
-    TicketCreated: number[];
+    TicketCreated: TicketCreated[];
     TicketMinted: number[];
   };
 };

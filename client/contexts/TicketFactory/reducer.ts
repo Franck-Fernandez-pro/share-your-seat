@@ -8,10 +8,7 @@ export const reducer = (state: State, { type, payload }: Action): State => {
         ...state,
         event: {
           ...state.event,
-          TicketCreated: {
-            ...state.event.TicketCreated,
-            ...payload,
-          },
+          TicketCreated: [...state.event.TicketCreated, ...payload],
         },
       };
 
