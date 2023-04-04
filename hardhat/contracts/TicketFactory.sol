@@ -8,8 +8,8 @@ import "./TicketSFT.sol";
 /// @notice Deploy ERC-1155 contracts
 /// @dev This contract used to create new Ticket collection
 contract TicketFactory {
-    // Array that contains different ERC-1155 tokens deployed
-    TicketSFT[] public tokens;
+    // Array that contains different ERC-1155 deployed
+    TicketSFT[] public sftCollections;
 
     // Index to contract address mapping
     mapping(uint256 collectionIndex => address contractAddress)
@@ -20,7 +20,7 @@ contract TicketFactory {
         public indexToOwner;
 
     // Emitted when ERC-1155 collection is deployed
-    event TicketCreated(address owner, address tokenContract, string name);
+    event TicketCreated(address owner, address collectionAddress, string name);
 
     // Emmited when ERC-1155 collection is minted
     event TicketMinted(
@@ -41,15 +41,26 @@ contract TicketFactory {
         uint16[] memory _ticketPrices,
         uint16[] memory _availableTickets
     ) public returns (address) {
+        require(bytes(_eventName).length != 0, "_eventName is empty");
+        require(bytes(_uri).length != 0, "_uri is empty");
+        require(
+            _availableTickets.length > 0 && _ticketPrices.length > 0,
+            "You should have at least one ticket"
+        );
+        require(
+            _ticketPrices.length == _availableTickets.length,
+            "Provided array have not same length"
+        );
+
         TicketSFT t = new TicketSFT(
             _eventName,
             _uri,
             _ticketPrices,
             _availableTickets
         );
-        tokens.push(t);
-        indexToContract[tokens.length - 1] = address(t);
-        indexToOwner[tokens.length - 1] = tx.origin;
+        sftCollections.push(t);
+        indexToContract[sftCollections.length - 1] = address(t);
+        indexToOwner[sftCollections.length - 1] = tx.origin;
 
         emit TicketCreated(msg.sender, address(t), t.name());
 
@@ -57,15 +68,15 @@ contract TicketFactory {
     }
 
     /// Mint ERC-1155 token with given parameters
-    /// @param _index Index position in tokens array. Represents which ERC-1155 you want to interact with
+    /// @param _index Index position in sftCollections array. Represents which ERC-1155 you want to interact with
     /// @param _id Id being minted
-    /// @param _amount Amount of tokens you wish to mint
+    /// @param _amount Amount of sftCollections you wish to mint
     function mintTicket(uint _index, uint256 _id, uint256 _amount) public {
-        tokens[_index].mint(msg.sender, _id, _amount);
+        sftCollections[_index].mint(msg.sender, _id, _amount);
         emit TicketMinted(
             msg.sender,
-            address(tokens[_index]),
-            tokens[_index].name(),
+            address(sftCollections[_index]),
+            sftCollections[_index].name(),
             _amount
         );
     }
