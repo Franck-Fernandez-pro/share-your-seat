@@ -7,7 +7,7 @@ interface Props {}
 
 const Navbar: FC<Props> = ({}) => {
   const { pathname } = useRouter();
-
+ 
   return (
     <div
       className={`navbar sticky ${
@@ -27,7 +27,7 @@ const Navbar: FC<Props> = ({}) => {
         </ul>
       </div>
       <div className="navbar-end">
-        <ConnectButton chainStatus="none" />
+        <ConnectButton chainStatus="name" />
       </div>
     </div>
   );
