@@ -92,9 +92,14 @@ const CreateEventForm: FC<Props> = ({}) => {
           />
         </div>
 
-        <button className="btn btn-primary mt-5" onClick={handleSubmit}>
-          Créer
-        </button>
+        <div className="text-center">
+          <button
+            className="btn btn-primary mx-auto mt-5"
+            onClick={handleSubmit}
+          >
+            Créer
+          </button>
+        </div>
       </div>
     </div>
   );
