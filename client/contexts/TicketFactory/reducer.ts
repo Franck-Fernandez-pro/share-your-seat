@@ -3,12 +3,25 @@ import { ActionType } from '.';
 
 export const reducer = (state: State, { type, payload }: Action): State => {
   switch (type) {
-    case ActionType.ADD_EVENT:
+    case ActionType.INIT_EVENT:
       return {
         ...state,
         event: {
           ...state.event,
-          TicketCreated: [...state.event.TicketCreated, ...payload],
+          TicketCreated: [...payload],
+        },
+      };
+
+    case ActionType.ADD_EVENT:
+      const existing = state.event.TicketCreated.filter(
+        ({ contractAddr }) => contractAddr !== payload.contractAddress
+      );
+
+      return {
+        ...state,
+        event: {
+          ...state.event,
+          TicketCreated: [...existing, payload],
         },
       };
 

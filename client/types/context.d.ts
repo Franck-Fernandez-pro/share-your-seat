@@ -23,6 +23,7 @@ type AppContext = {
       ticketPrices: number[],
       availableTickets: number[]
     ) => Promise<any>;
+    fetchTicketCreatedEvent: () => void;
   };
 };
 

@@ -11,4 +11,9 @@ export const initialState: State = {
 export const TicketFactoryContext = createContext<AppContext>({
   state: initialState,
   dispatch: () => {},
+  handler: {
+    // @ts-ignore
+    deployEvent: () => {},
+    fetchTicketCreatedEvent: () => {},
+  },
 });

@@ -1,14 +1,8 @@
 import Events from '@/components/Events';
 import Intro from '@/components/Intro';
-import { TicketFactoryContext } from '@/contexts/TicketFactory';
 import Head from 'next/head';
-import { useContext } from 'react';
 
 export default function Home() {
-  console.log(
-    'Factory address',
-    process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
-  );
   return (
     <>
       <Head>
