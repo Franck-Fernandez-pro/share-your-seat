@@ -1,5 +1,6 @@
 import '@/styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
+import 'react-toastify/dist/ReactToastify.css';
 import type { AppProps } from 'next/app';
 
 import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
@@ -9,6 +10,7 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import Layout from '@/components/Layout';
 import { Provider } from '@/contexts/TicketFactory';
+import { ToastContainer } from 'react-toastify';
 
 const { chains, provider } = configureChains(
   [polygon, polygonMumbai, hardhat],
@@ -33,6 +35,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Provider>
           <Layout>
             <Component {...pageProps} />
+            <ToastContainer position="bottom-left" hideProgressBar />
           </Layout>
         </Provider>
       </RainbowKitProvider>
