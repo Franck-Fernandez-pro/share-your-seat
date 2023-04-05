@@ -76,8 +76,48 @@ export function Provider({ children }: { children: ReactNode }) {
           ticketPrices,
           availableTickets
         );
-
+        await response.wait();
         toast.success('Événements créé');
+        return response;
+      } catch (error) {
+        toast.error("Une erreur s'est produite");
+      }
+    },
+    [ticketFactory]
+  );
+
+  const fetchCollection = useCallback(
+    async (addr: string) => {
+      console.log('addr:', addr);
+      if (!ticketFactory) return;
+
+      try {
+        const response = await ticketFactory.getCollection(addr);
+        console.log('response:', response);
+
+        return response;
+      } catch (error) {
+        console.error(error);
+        toast.error("Une erreur s'est produite");
+      }
+    },
+    [ticketFactory]
+  );
+
+  const mint = useCallback(
+    async (addr: string, id: number, amount: number) => {
+      console.group();
+      console.log('amount:', amount);
+      console.log('id:', id);
+      console.log('addr:', addr);
+      console.groupEnd();
+      if (!ticketFactory) return;
+
+      try {
+        const response = await ticketFactory.mintTicket(addr, id, amount);
+        console.log('response:', response);
+        await response.wait();
+        toast.success('Ticket mint');
         return response;
       } catch (error) {
         toast.error("Une erreur s'est produite");
@@ -91,7 +131,12 @@ export function Provider({ children }: { children: ReactNode }) {
       value={{
         state,
         dispatch,
-        handler: { deployEvent, fetchTicketCreatedEvent },
+        handler: {
+          deployEvent,
+          fetchTicketCreatedEvent,
+          fetchCollection,
+          mint,
+        },
       }}
     >
       {children && children}
