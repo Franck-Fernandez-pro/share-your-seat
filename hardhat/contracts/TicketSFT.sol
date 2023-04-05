@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.17;
 
 import "../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
@@ -19,6 +19,7 @@ contract TicketSFT is ERC1155, Ownable {
 
     // Array of mintable tickets. Index is used as token id
     uint16[] public availableTickets;
+    uint256 public availableTicketsLength;
 
     // :::::::::::::::::::::: CONSTRUCTOR ::::::::::::::::::::::
     /// @dev Executed when the factory calls its own deployTicket() function
@@ -40,6 +41,7 @@ contract TicketSFT is ERC1155, Ownable {
         name = _eventName;
         baseMetadataURI = _uri;
         availableTickets = _availableTickets;
+        availableTicketsLength = _availableTickets.length;
         transferOwnership(tx.origin);
     }
 

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.18;
+pragma solidity 0.8.17;
 
 import "./TicketSFT.sol";
 
@@ -11,13 +11,11 @@ contract TicketFactory {
     // Array that contains different ERC-1155 deployed
     TicketSFT[] public sftCollections;
 
-    // Index to contract address mapping
-    mapping(uint256 collectionIndex => address contractAddress)
-        public indexToContract;
+    // contract address to TicketSFT mapping
+    mapping(address => TicketSFT) private contractToCollection;
 
     // Index to ERC-1155 owner address
-    mapping(uint256 collectionIndex => address ownerAddress)
-        public indexToOwner;
+    mapping(uint256 => address) public indexToOwner;
 
     // Emitted when ERC-1155 collection is deployed
     event TicketCreated(address owner, address collectionAddress, string name);
@@ -29,6 +27,28 @@ contract TicketFactory {
         string name,
         uint256 amount
     );
+
+    /// Return collection onChain data
+    /// @param _addr Contract address
+    /// @return eventName Contract name
+    /// @return uri Contract uri
+    /// @return availableTicketsLength Contract's avaible tickets
+    function getCollection(
+        address _addr
+    )
+        public
+        view
+        returns (
+            string memory eventName,
+            string memory uri,
+            uint256 availableTicketsLength
+        )
+    {
+        eventName = contractToCollection[_addr].name();
+        uri = contractToCollection[_addr].baseMetadataURI();
+        availableTicketsLength = contractToCollection[_addr]
+            .availableTicketsLength();
+    }
 
     /// Deploys a ERC-1155 token with given parameters - returns deployed address
     /// @param _eventName Name of ERC-1155 collection
@@ -59,7 +79,7 @@ contract TicketFactory {
             _availableTickets
         );
         sftCollections.push(t);
-        indexToContract[sftCollections.length - 1] = address(t);
+        contractToCollection[address(t)] = t;
         indexToOwner[sftCollections.length - 1] = tx.origin;
 
         emit TicketCreated(msg.sender, address(t), t.name());
@@ -68,15 +88,15 @@ contract TicketFactory {
     }
 
     /// Mint ERC-1155 token with given parameters
-    /// @param _index Index position in sftCollections array. Represents which ERC-1155 you want to interact with
+    /// @param _addr Collection address. Represents which ERC-1155 you want to interact with
     /// @param _id Id being minted
     /// @param _amount Amount of sftCollections you wish to mint
-    function mintTicket(uint _index, uint256 _id, uint256 _amount) public {
-        sftCollections[_index].mint(msg.sender, _id, _amount);
+    function mintTicket(address _addr, uint256 _id, uint256 _amount) public {
+        contractToCollection[_addr].mint(msg.sender, _id, _amount);
         emit TicketMinted(
             msg.sender,
-            address(sftCollections[_index]),
-            sftCollections[_index].name(),
+            address(contractToCollection[_addr]),
+            contractToCollection[_addr].name(),
             _amount
         );
     }
