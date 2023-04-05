@@ -24,11 +24,7 @@ const Events: FC<Props> = ({}) => {
       <div className="flex flex-wrap justify-center gap-5">
         {TicketCreated &&
           TicketCreated.map(({ contractAddr, name, owner }, idx) => (
-            <EventCard
-              key={idx}
-              title={name}
-              href={`event/${contractAddr}`}
-            />
+            <EventCard key={idx} title={name} href={`event/${contractAddr}`} />
           ))}
       </div>
 
