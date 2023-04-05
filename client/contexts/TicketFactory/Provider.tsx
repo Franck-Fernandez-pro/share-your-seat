@@ -8,6 +8,7 @@ import {
 import { useContract, useSigner } from 'wagmi';
 import artifact from '../../../hardhat/artifacts/contracts/TicketFactory.sol/TicketFactory.json';
 import { TicketCreated } from '@/types/context';
+import { toast } from 'react-toastify';
 
 export function Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -39,8 +40,36 @@ export function Provider({ children }: { children: ReactNode }) {
     }
   }, [ticketFactory, dispatch]);
 
+  const deployEvent = useCallback(
+    async (
+      eventName: string,
+      uri: string,
+      ticketPrices: number[],
+      availableTickets: number[]
+    ) => {
+      if (!ticketFactory) return;
+
+      try {
+        const response = await ticketFactory.deployTicket(
+          eventName,
+          uri,
+          ticketPrices,
+          availableTickets
+        );
+
+        toast.success('Événements créé');
+        return response;
+      } catch (error) {
+        toast.error("Une erreur s'est produite");
+      }
+    },
+    [ticketFactory]
+  );
+
   return (
-    <TicketFactoryContext.Provider value={{ state, dispatch }}>
+    <TicketFactoryContext.Provider
+      value={{ state, dispatch, handler: { deployEvent } }}
+    >
       {children && children}
     </TicketFactoryContext.Provider>
   );

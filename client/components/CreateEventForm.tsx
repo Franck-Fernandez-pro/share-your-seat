@@ -1,5 +1,6 @@
+import { TicketFactoryContext } from '@/contexts/TicketFactory';
 import { useInput } from '@/hooks';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 
 interface Props {}
 
@@ -10,6 +11,9 @@ const CreateEventForm: FC<Props> = ({}) => {
     useInput<string>('');
   const { props: availableTicketsField, setValue: setAvailableTickets } =
     useInput<string>('');
+  const {
+    handler: { deployEvent },
+  } = useContext(TicketFactoryContext);
 
   function handleSubmit() {
     const ticketPrices = ticketPricesField.value
@@ -18,6 +22,13 @@ const CreateEventForm: FC<Props> = ({}) => {
     const availableTickets = availableTicketsField.value
       .split(',')
       .map((i) => parseInt(i));
+
+    deployEvent(
+      nameField.value,
+      CIDField.value,
+      ticketPrices,
+      availableTickets
+    );
   }
 
   return (

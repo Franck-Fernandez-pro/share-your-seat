@@ -16,6 +16,14 @@ type State = {
 type AppContext = {
   state: State;
   dispatch: Dispatch<Action>;
+  handler: {
+    deployEvent: (
+      eventName: string,
+      uri: string,
+      ticketPrices: number[],
+      availableTickets: number[]
+    ) => Promise<any>;
+  };
 };
 
 type Action = {
