@@ -26,9 +26,8 @@ const Events: FC<Props> = ({}) => {
           TicketCreated.map(({ contractAddr, name, owner }, idx) => (
             <EventCard
               key={idx}
-              text={`${contractAddr} - ${owner}`}
               title={name}
-              href={`event/${idx}`}
+              href={`event/${contractAddr}`}
             />
           ))}
       </div>

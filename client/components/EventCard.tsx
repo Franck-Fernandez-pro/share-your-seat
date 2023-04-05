@@ -3,7 +3,7 @@ import { FC } from 'react';
 
 interface Props {
   title: string;
-  text: string;
+  text?: string;
   imgSrc?: string;
   btnText?: string;
   href?: string;
