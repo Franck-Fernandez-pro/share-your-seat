@@ -93,7 +93,6 @@ export function useCollection(addr: string) {
 
     try {
       const response = await collection.withdraw(address);
-      console.log('response:', response);
       getCollectionBalance();
 
       toast.success('Withdraw réussi');
