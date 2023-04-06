@@ -1,9 +1,13 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useContract, useSigner } from 'wagmi';
 import artifact from '../../hardhat/artifacts/contracts/TicketSFT.sol/TicketSFT.json';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 
 export function useCollection(addr: string) {
+  const [state, setState] = useState({
+    ticketPrice: 0,
+  });
   const { address } = useAccount();
   const { data: signerData } = useSigner();
   const collection = useContract({
@@ -38,5 +42,21 @@ export function useCollection(addr: string) {
     }
   }
 
-  return { mint };
+  async function getTicketPrice(id: number) {
+    if (!collection) return;
+
+    try {
+      const response = await collection.ticketPrices(id);
+      setState((s) => ({
+        ...s,
+        ticketPrice: ethers.BigNumber.from(response).toNumber(),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return { state, mint, getTicketPrice };
 }

@@ -1,14 +1,19 @@
-import { useInput } from '@/hooks';
 import { FC, MouseEvent, useEffect, useState } from 'react';
+import { useCollection, useInput } from '@/hooks';
 
 interface Props {
   uri: string;
   id: string;
   onMint: (ticketId: number, amount: number) => void;
+  addr: string;
 }
 
-const TicketCard: FC<Props> = ({ uri = '', onMint, id }) => {
+const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
   const { props: amountProps } = useInput<string>('');
+  const {
+    getTicketPrice,
+    state: { ticketPrice },
+  } = useCollection(addr);
   const [data, setData] = useState({
     name: 'qsd',
     description: '',
@@ -23,6 +28,7 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id }) => {
 
   useEffect(() => {
     fetchMetadata();
+    getTicketPrice && getTicketPrice(parseInt(id));
   }, []);
 
   async function fetchMetadata() {
@@ -48,9 +54,9 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id }) => {
         <div className="form-control w-full max-w-xs">
           <label className="label">
             <span className="label-text">Montant à mint</span>
-            <span className="label-text-alt">
-              {data.properties.price} Wei/place
-            </span>
+            {ticketPrice && (
+              <span className="label-text-alt">{ticketPrice} Wei/place</span>
+            )}
           </label>
 
           <input

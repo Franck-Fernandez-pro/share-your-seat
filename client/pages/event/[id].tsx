@@ -1,6 +1,6 @@
 import TicketCard from '@/components/TicketCard';
 import { TicketFactoryContext } from '@/contexts/TicketFactory';
-import { useCollection } from '@/hooks/useCollection';
+import { useCollection } from '@/hooks';
 import { ethers } from 'ethers';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -80,6 +80,7 @@ const Event = () => {
           uri={`${collection.uri}${i}.json`}
           id={`${i}`}
           onMint={handleMint}
+          addr={id as string}
         />
       );
     }

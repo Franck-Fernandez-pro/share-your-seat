@@ -17,7 +17,7 @@ const CreateEventForm: FC<Props> = ({}) => {
 
   function handleSubmit() {
     const ticketPrices = ticketPricesField.value
-      .split(',')
+      .split('/')
       .map((i) => parseInt(i));
     const availableTickets = availableTicketsField.value
       .split('/')
