@@ -4,13 +4,14 @@ pragma solidity 0.8.17;
 import "../node_modules/@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
+import "../node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 /// @title Tickts for an event
 /// @author Franck Fernandez
 /// @notice Mint and handle your tickets about an event
 /// @dev This contract is deployed by TicketFactory smart contract
 /// @dev You can use this contract to mint, transfer, sell, check data about an event (concert, match, theatre)
-contract TicketSFT is ERC1155, Ownable {
+contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
     // Token metadata URI
     string public baseMetadataURI;
 
@@ -41,7 +42,7 @@ contract TicketSFT is ERC1155, Ownable {
     constructor(
         string memory _eventName,
         string memory _uri,
-        uint16[] memory _ticketPrices,
+        uint256[] memory _ticketPrices,
         uint16[] memory _availableTickets
     ) ERC1155(_uri) {
         require(
@@ -82,11 +83,11 @@ contract TicketSFT is ERC1155, Ownable {
         address _account,
         uint256 _id,
         uint16 _amount
-    ) public payable {
-        // require(
-        //     msg.value == ticketPrices[_id] * _amount,
-        //     "Not enough wei sended"
-        // );
+    ) external payable {
+        require(
+            msg.value == ticketPrices[_id] * _amount,
+            "Not enough wei sended"
+        );
         require(_amount <= availableTickets[_id], "_amount not available");
         availableTickets[_id] -= _amount;
         emit TicketMinted(msg.sender, address(this), _amount, _id);
@@ -103,7 +104,14 @@ contract TicketSFT is ERC1155, Ownable {
         uint256[] memory _ids,
         uint256[] memory _amounts,
         bytes memory _data
-    ) public {
+    ) external {
         _mintBatch(_to, _ids, _amounts, _data);
+    }
+
+    function withdraw(address _addr) external onlyOwner nonReentrant {
+        (bool success, ) = payable(_addr).call{value: address(this).balance}(
+            ""
+        );
+        require(success, "Error on withdraw");
     }
 }

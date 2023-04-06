@@ -50,7 +50,7 @@ contract TicketFactory {
     function deployTicket(
         string memory _eventName,
         string memory _uri,
-        uint16[] memory _ticketPrices,
+        uint256[] memory _ticketPrices,
         uint16[] memory _availableTickets
     ) public returns (address) {
         require(bytes(_eventName).length != 0, "_eventName is empty");
