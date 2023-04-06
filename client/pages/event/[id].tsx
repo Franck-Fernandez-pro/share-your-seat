@@ -75,8 +75,8 @@ const Event = () => {
       tickets.push(
         <TicketCard
           key={i}
-          uri={`${collection.uri}${i + 1}.json`}
-          id={`${i + 1}`}
+          uri={`${collection.uri}${i}.json`}
+          id={`${i}`}
           onMint={handleMint}
         />
       );
@@ -105,13 +105,17 @@ const Event = () => {
                 <AiOutlineReload className="h-5 w-5" />
               </button>
             </h1>
-            <p className="py-6">{data.description}</p>
-            <p className="flex items-center justify-center gap-2">
-              <AiFillHome className="h-4 w-4" /> {data.properties.address}
-            </p>
-            <p className="flex items-center justify-center gap-2">
-              <AiFillCalendar className="h-4 w-4" /> {data.properties.date}
-            </p>
+            {data.description && <p className="py-6">{data.description}</p>}
+            {data.properties.address && (
+              <p className="flex items-center justify-center gap-2">
+                <AiFillHome className="h-4 w-4" /> {data.properties.address}
+              </p>
+            )}
+            {data.properties.date && (
+              <p className="flex items-center justify-center gap-2">
+                <AiFillCalendar className="h-4 w-4" /> {data.properties.date}
+              </p>
+            )}
           </div>
         </div>
       </div>
