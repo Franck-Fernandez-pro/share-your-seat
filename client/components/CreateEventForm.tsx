@@ -20,26 +20,33 @@ const CreateEventForm: FC<Props> = ({}) => {
       .split(',')
       .map((i) => parseInt(i));
     const availableTickets = availableTicketsField.value
-      .split(',')
+      .split('/')
       .map((i) => parseInt(i));
 
     deployEvent(
       nameField.value,
-      CIDField.value,
+      `https://gateway.pinata.cloud/ipfs/${CIDField.value}/`,
       ticketPrices,
       availableTickets
     );
   }
 
+  function handleDemo() {
+    setName('Jo de Paris');
+    setCID('QmVwVuTS2jVUwvuzBr2oAWdhg5dJMtrE1Yhu7DSKv7YQYU');
+    setTicketPrices('1/2/3/4/5');
+    setAvailableTickets('100/200/300/400/500');
+  }
+
   return (
-    <div className="p-10">
+    <div className="mx-auto max-w-3xl p-10">
       {/* <ApiKeysForm />
       <div className="divider" />
       <PinMetadata />
       <div className="divider" /> */}
 
-      <div>
-        <h2 className="text-2xl font-bold">
+      <div className="[&_.form-control]:mb-5">
+        <h2 className="mb-6 text-center text-2xl font-bold">
           Ajouter les informations de l'événement
         </h2>
         <div className="form-control">
@@ -56,7 +63,7 @@ const CreateEventForm: FC<Props> = ({}) => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">CID IPFS</span>
+            <span className="label-text">CID Pinata</span>
           </label>
           <input
             className="input input-bordered"
@@ -68,12 +75,12 @@ const CreateEventForm: FC<Props> = ({}) => {
 
         <div className="form-control">
           <label className="label">
-            <span className="label-text">Prix des tickets</span>
+            <span className="label-text">Prix des tickets en Wei</span>
           </label>
           <input
             className="input input-bordered"
             type="text"
-            placeholder="10,15,50"
+            placeholder="10/15/50"
             required
             {...ticketPricesField}
           />
@@ -86,7 +93,7 @@ const CreateEventForm: FC<Props> = ({}) => {
           <input
             className="input input-bordered"
             type="text"
-            placeholder="100,50,20"
+            placeholder="100/50/20"
             required
             {...availableTicketsField}
           />
@@ -99,8 +106,15 @@ const CreateEventForm: FC<Props> = ({}) => {
           >
             Créer
           </button>
+          <button
+            className="btn btn-secondary mx-auto mt-5 ml-5"
+            onClick={handleDemo}
+          >
+            Demo
+          </button>
         </div>
       </div>
+      <div className="divider mt-5" />
     </div>
   );
 };

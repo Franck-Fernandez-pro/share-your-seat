@@ -22,9 +22,9 @@ const Event: FC<Props> = ({}) => (
               et a id nisi.
             </p>
           </div>
-          <CreateEventForm />
         </div>
       </section>
+      <CreateEventForm />
 
       <Events />
     </main>
