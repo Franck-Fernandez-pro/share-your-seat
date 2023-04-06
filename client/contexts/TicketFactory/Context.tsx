@@ -17,7 +17,5 @@ export const TicketFactoryContext = createContext<AppContext>({
     fetchTicketCreatedEvent: () => {},
     // @ts-ignore
     fetchCollection: () => {},
-    // @ts-ignore
-    mint: () => {},
   },
 });

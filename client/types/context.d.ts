@@ -25,7 +25,6 @@ type AppContext = {
     ) => Promise<any>;
     fetchTicketCreatedEvent: () => void;
     fetchCollection: (addr: string) => Promise<any>;
-    mint: (addr: string, id: number, amount: number) => Promise<any>;
   };
 };
 

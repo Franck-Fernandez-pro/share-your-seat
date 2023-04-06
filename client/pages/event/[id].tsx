@@ -1,5 +1,6 @@
 import TicketCard from '@/components/TicketCard';
 import { TicketFactoryContext } from '@/contexts/TicketFactory';
+import { useCollection } from '@/hooks/useCollection';
 import { ethers } from 'ethers';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,8 +13,9 @@ const Event = () => {
   const { isConnected } = useAccount();
   const { id } = router.query;
   const {
-    handler: { fetchCollection, mint },
+    handler: { fetchCollection },
   } = useContext(TicketFactoryContext);
+  const { mint } = useCollection(id as string);
   const [collection, setCollection] = useState({
     eventName: '',
     uri: '',
@@ -86,8 +88,7 @@ const Event = () => {
   }
 
   function handleMint(ticketId: number, amount: number) {
-    const addr = id as string;
-    mint && mint(addr, ticketId, amount);
+    mint && mint(ticketId, amount);
   }
 
   return (
