@@ -7,6 +7,7 @@ import { ethers } from 'ethers';
 export function useCollection(addr: string) {
   const [state, setState] = useState({
     ticketPrice: 0,
+    availableTickets: 0,
   });
   const { address } = useAccount();
   const { data: signerData } = useSigner();
@@ -58,5 +59,21 @@ export function useCollection(addr: string) {
     }
   }
 
-  return { state, mint, getTicketPrice };
+  async function getAvailableTicket(id: number) {
+    if (!collection) return;
+
+    try {
+      const response = await collection.availableTickets(id);
+      setState((s) => ({
+        ...s,
+        availableTickets: ethers.BigNumber.from(response).toNumber(),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  return { state, mint, getTicketPrice, getAvailableTicket };
 }

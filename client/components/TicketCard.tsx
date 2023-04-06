@@ -12,7 +12,8 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
   const { props: amountProps } = useInput<string>('');
   const {
     getTicketPrice,
-    state: { ticketPrice },
+    getAvailableTicket,
+    state: { ticketPrice, availableTickets },
   } = useCollection(addr);
   const [data, setData] = useState({
     name: 'qsd',
@@ -28,7 +29,8 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
 
   useEffect(() => {
     fetchMetadata();
-    getTicketPrice && getTicketPrice(parseInt(id));
+    getTicketPrice(parseInt(id));
+    getAvailableTicket(parseInt(id));
   }, []);
 
   async function fetchMetadata() {
@@ -65,6 +67,13 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
             placeholder="1"
             {...amountProps}
           />
+          {availableTickets >= 0 && (
+            <label className="label">
+              <span className="label-text-alt ml-auto">
+                {availableTickets} places disponibles
+              </span>
+            </label>
+          )}
 
           <div className="card-actions mt-5 justify-end">
             <button
