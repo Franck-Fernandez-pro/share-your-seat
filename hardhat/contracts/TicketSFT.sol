@@ -114,4 +114,8 @@ contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
         );
         require(success, "Error on withdraw");
     }
+
+    function collectionBalance() external view returns (uint256) {
+        return address(this).balance;
+    }
 }

@@ -15,7 +15,12 @@ const Event = () => {
   const {
     handler: { fetchCollection },
   } = useContext(TicketFactoryContext);
-  const { mint } = useCollection(id as string);
+  const {
+    mint,
+    getCollectionBalance,
+    withdraw,
+    state: { collectionBalance },
+  } = useCollection(id as string);
   const [collection, setCollection] = useState({
     eventName: '',
     uri: '',
@@ -40,6 +45,7 @@ const Event = () => {
     if (collection.uri) {
       fetchMetadata();
     }
+    getCollectionBalance();
   }, [collection]);
 
   async function fetchMetadata() {
@@ -118,6 +124,16 @@ const Event = () => {
                 <AiFillCalendar className="h-4 w-4" /> {data.properties.date}
               </p>
             )}
+            <button
+              className="btn btn-accent btn-sm mt-5"
+              disabled={collectionBalance === 0}
+              onClick={withdraw}
+            >
+              Withdraw{' '}
+              {collectionBalance
+                ? `${collectionBalance} Wei`
+                : collectionBalance}
+            </button>
           </div>
         </div>
       </div>

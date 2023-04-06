@@ -8,6 +8,7 @@ export function useCollection(addr: string) {
   const [state, setState] = useState({
     ticketPrice: 0,
     availableTickets: 0,
+    collectionBalance: 0,
   });
   const { address } = useAccount();
   const { data: signerData } = useSigner();
@@ -71,5 +72,44 @@ export function useCollection(addr: string) {
     }
   }
 
-  return { state, mint, getTicketPrice, getAvailableTicket };
+  async function getCollectionBalance() {
+    if (!collection) return;
+
+    try {
+      const response = await collection.collectionBalance();
+      setState((s) => ({
+        ...s,
+        collectionBalance: ethers.BigNumber.from(response).toNumber(),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function withdraw() {
+    if (!collection) return;
+
+    try {
+      const response = await collection.withdraw(address);
+      console.log('response:', response);
+      getCollectionBalance();
+
+      toast.success('Withdraw réussi');
+      return response;
+    } catch (error) {
+      toast.error("Une erreur s'est produite");
+      console.error(error);
+    }
+  }
+
+  return {
+    state,
+    mint,
+    getTicketPrice,
+    getAvailableTicket,
+    getCollectionBalance,
+    withdraw,
+  };
 }
