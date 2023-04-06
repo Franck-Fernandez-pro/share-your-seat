@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAccount, useContract, useSigner } from 'wagmi';
-import artifact from '../../hardhat/artifacts/contracts/TicketSFT.sol/TicketSFT.json';
+import artifact from '../contracts/TicketSFT.json';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 

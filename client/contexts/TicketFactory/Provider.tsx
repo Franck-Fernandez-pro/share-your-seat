@@ -7,7 +7,7 @@ import {
   ActionType,
 } from './index';
 import { useContract, useContractEvent, useSigner } from 'wagmi';
-import artifact from '../../../hardhat/artifacts/contracts/TicketFactory.sol/TicketFactory.json';
+import artifact from '../../contracts/TicketFactory.json';
 import { TicketCreated } from '@/types/context';
 import { toast } from 'react-toastify';
 
