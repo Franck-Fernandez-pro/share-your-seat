@@ -46,9 +46,9 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
   }
 
   return data.name ? (
-    <div className="card bg-base-100 w-80 shadow-xl">
+    <div className="card bg-base-100 max-h-[550px] w-80 shadow-xl">
       <figure>
-        <img className="max-h-64 object-fill" src={data.image} alt="" />
+        <img className="object-fill" src={data.image} alt="" />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{data.type}</h2>
