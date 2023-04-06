@@ -21,17 +21,13 @@ export function useCollection(addr: string) {
     console.log('Collection address', addr);
   }, [addr]);
 
-  async function mint(id: number, amount: number) {
-    console.group();
-    console.log('amount:', amount);
-    console.log('id:', id);
-    console.log('address', address);
-    console.groupEnd();
+  async function mint(id: number, amount: number, price: number) {
     if (!collection) return;
 
     try {
-      const response = await collection.mint(address, id, amount);
-      console.log('mint response', response);
+      const response = await collection.mint(address, id, amount, {
+        value: ethers.utils.parseUnits(`${price * amount}`, 'wei'),
+      });
 
       await response.wait();
 

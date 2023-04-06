@@ -4,7 +4,7 @@ import { useCollection, useInput } from '@/hooks';
 interface Props {
   uri: string;
   id: string;
-  onMint: (ticketId: number, amount: number) => void;
+  onMint: (ticketId: number, amount: number, price: number) => void;
   addr: string;
 }
 
@@ -42,7 +42,12 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
   }
 
   function handleMint(e: MouseEvent<HTMLButtonElement>) {
-    onMint && onMint(parseInt(e.currentTarget.id), parseInt(amountProps.value));
+    onMint &&
+      onMint(
+        parseInt(e.currentTarget.id),
+        parseInt(amountProps.value),
+        ticketPrice
+      );
   }
 
   return data.name ? (

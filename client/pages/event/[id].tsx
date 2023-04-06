@@ -88,8 +88,8 @@ const Event = () => {
     return tickets;
   }
 
-  function handleMint(ticketId: number, amount: number) {
-    mint && mint(ticketId, amount);
+  function handleMint(ticketId: number, amount: number, price: number) {
+    mint && mint(ticketId, amount, price);
   }
 
   return (
