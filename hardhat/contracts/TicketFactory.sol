@@ -20,14 +20,6 @@ contract TicketFactory {
     // Emitted when ERC-1155 collection is deployed
     event TicketCreated(address owner, address collectionAddress, string name);
 
-    // Emmited when ERC-1155 collection is minted
-    event TicketMinted(
-        address owner,
-        address tokenContract,
-        string name,
-        uint256 amount
-    );
-
     /// Return collection onChain data
     /// @param _addr Contract address
     /// @return eventName Contract name
@@ -85,19 +77,5 @@ contract TicketFactory {
         emit TicketCreated(msg.sender, address(t), t.name());
 
         return address(t);
-    }
-
-    /// Mint ERC-1155 token with given parameters
-    /// @param _addr Collection address. Represents which ERC-1155 you want to interact with
-    /// @param _id Id being minted
-    /// @param _amount Amount of sftCollections you wish to mint
-    function mintTicket(address _addr, uint256 _id, uint256 _amount) public {
-        contractToCollection[_addr].mint(msg.sender, _id, _amount);
-        emit TicketMinted(
-            msg.sender,
-            address(contractToCollection[_addr]),
-            contractToCollection[_addr].name(),
-            _amount
-        );
     }
 }

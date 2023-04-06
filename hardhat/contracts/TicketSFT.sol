@@ -24,6 +24,14 @@ contract TicketSFT is ERC1155, Ownable {
     // Array of ticket prices
     uint256[] public ticketPrices;
 
+    // Emmited when ERC-1155 collection is minted
+    event TicketMinted(
+        address owner,
+        address collectionAddr,
+        uint256 amount,
+        uint256 id
+    );
+
     // :::::::::::::::::::::: CONSTRUCTOR ::::::::::::::::::::::
     /// @dev Executed when the factory calls its own deployTicket() function
     /// @param _eventName name of SFT collection
@@ -70,13 +78,18 @@ contract TicketSFT is ERC1155, Ownable {
     /// @param _account address to mint the token to
     /// @param _id ID being minted
     /// @param _amount amount of tokens to mint
-    function mint(address _account, uint _id, uint16 _amount) public payable {
-        require(
-            msg.value == ticketPrices[_id] * _amount,
-            "Not enough wei sended"
-        );
+    function mint(
+        address _account,
+        uint256 _id,
+        uint16 _amount
+    ) public payable {
+        // require(
+        //     msg.value == ticketPrices[_id] * _amount,
+        //     "Not enough wei sended"
+        // );
         require(_amount <= availableTickets[_id], "_amount not available");
         availableTickets[_id] -= _amount;
+        emit TicketMinted(msg.sender, address(this), _amount, _id);
         _mint(_account, _id, _amount, "");
     }
 
