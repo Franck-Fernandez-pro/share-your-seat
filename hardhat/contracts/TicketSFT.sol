@@ -11,7 +11,7 @@ import "../node_modules/@openzeppelin/contracts/utils/Strings.sol";
 /// @dev This contract is deployed by TicketFactory smart contract
 /// @dev You can use this contract to mint, transfer, sell, check data about an event (concert, match, theatre)
 contract TicketSFT is ERC1155, Ownable {
-    // Token metadata URI as https://ipfs.io/HASH/
+    // Token metadata URI
     string public baseMetadataURI;
 
     // Token name (Event name)
@@ -20,6 +20,9 @@ contract TicketSFT is ERC1155, Ownable {
     // Array of mintable tickets. Index is used as token id
     uint16[] public availableTickets;
     uint256 public availableTicketsLength;
+
+    // Array of ticket prices
+    uint256[] public ticketPrices;
 
     // :::::::::::::::::::::: CONSTRUCTOR ::::::::::::::::::::::
     /// @dev Executed when the factory calls its own deployTicket() function
@@ -42,6 +45,7 @@ contract TicketSFT is ERC1155, Ownable {
         baseMetadataURI = _uri;
         availableTickets = _availableTickets;
         availableTicketsLength = _availableTickets.length;
+        ticketPrices = _ticketPrices;
         transferOwnership(tx.origin);
     }
 
@@ -66,13 +70,14 @@ contract TicketSFT is ERC1155, Ownable {
     /// @param _account address to mint the token to
     /// @param _id ID being minted
     /// @param _amount amount of tokens to mint
-    function mint(
-        address _account,
-        uint _id,
-        uint256 _amount
-    ) public payable returns (uint) {
+    function mint(address _account, uint _id, uint16 _amount) public payable {
+        require(
+            msg.value == ticketPrices[_id] * _amount,
+            "Not enough wei sended"
+        );
+        require(_amount <= availableTickets[_id], "_amount not available");
+        availableTickets[_id] -= _amount;
         _mint(_account, _id, _amount, "");
-        return _id;
     }
 
     /// Mint batch tokens
