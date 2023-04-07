@@ -33,18 +33,21 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     abi: artifact.abi,
     functionName: 'owner',
   });
+  console.log('owner:', owner);
 
   const { data: ticketsLength } = useContractRead({
     address: addr as `0x${string}`,
     abi: artifact.abi,
     functionName: 'availableTicketsLength',
   });
+  console.log('ticketsLength:', ticketsLength);
 
   const { data: name } = useContractRead({
     address: addr as `0x${string}`,
     abi: artifact.abi,
     functionName: 'name',
   });
+  console.log('name:', name);
 
   async function mint(id: number, amount: number, price: number) {
     if (!collection) return;

@@ -42,9 +42,9 @@ const CollectionSection: FC<{ addr: string }> = ({ addr }) => {
     handler: { fetchCollection },
   } = useContext(TicketFactoryContext);
   const { ticketsLength, name, balanceOfBatch } = useCollection(addr, { ids });
-  console.log('balanceOfBatch:', balanceOfBatch);
-  console.log('name:', name);
-  console.log('ticketsLength:', ticketsLength);
+  // console.log('balanceOfBatch:', balanceOfBatch);
+  // console.log('name:', name);
+  // console.log('ticketsLength:', ticketsLength);
   const [collection, setCollection] = useState({
     eventName: '',
     uri: '',
