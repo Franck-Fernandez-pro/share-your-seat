@@ -19,7 +19,7 @@ import { ethers } from 'ethers';
 
 export function Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [collections, setCollections] = useState<string[]>([])
+  const [collections, setCollections] = useState<string[]>([]);
   const [len, setLen] = useState(0);
   const { data: signerData } = useSigner();
   const ticketFactory = useContract({
@@ -51,25 +51,25 @@ export function Provider({ children }: { children: ReactNode }) {
     enabled: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined,
     watch: true,
   });
-  console.group('HERE');
-  console.log('sftCollectionsLength:', sftCollectionsLength);
-  console.log(
-    'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS:',
-    process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
-  );
-  console.log('artifact.abi:', artifact.abi);
-  console.log(
-    'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined:',
-    process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined
-  );
-  console.groupEnd();
+  // console.group('HERE');
+  // console.log('sftCollectionsLength:', sftCollectionsLength);
+  // console.log(
+  //   'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS:',
+  //   process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
+  // );
+  // console.log('artifact.abi:', artifact.abi);
+  // console.log(
+  //   'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined:',
+  //   process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined
+  // );
+  // console.groupEnd();
 
   useEffect(() => {
     console.log(
       'Factory address',
       process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
     );
-    fetchSftCollectionsLength()
+    fetchSftCollectionsLength();
   }, []);
 
   useEffect(() => {
@@ -82,8 +82,12 @@ export function Provider({ children }: { children: ReactNode }) {
     try {
       const response = await ticketFactory.getSftCollectionsLength();
       console.log('fetchSftCollectionsLength response:', response);
-      if (response) {
+      console.log(
+        'fetchSftCollectionsLength r:',
         setLen(ethers.BigNumber.from(response).toNumber)
+      );
+      if (response) {
+        setLen(ethers.BigNumber.from(response).toNumber);
       }
       return response;
     } catch (error) {
@@ -93,9 +97,10 @@ export function Provider({ children }: { children: ReactNode }) {
   }
 
   async function fetchCollections() {
-    if (!ticketFactory || !sftCollectionsLength) return;
-    console.log('sftCollectionsLength:', sftCollectionsLength);
-    const length = ethers.BigNumber.from(sftCollectionsLength).toNumber();
+    if (!ticketFactory || !len) return;
+    console.log('len:', len);
+    // const length = ethers.BigNumber.from(len).toNumber();
+    const length = len;
     console.log('length:', length);
     if (length === 0) return;
 
@@ -185,7 +190,7 @@ export function Provider({ children }: { children: ReactNode }) {
           fetchCollection,
           fetchCollections,
           //@ts-ignore
-          fetchSftCollectionsLength
+          fetchSftCollectionsLength,
         },
       }}
     >
