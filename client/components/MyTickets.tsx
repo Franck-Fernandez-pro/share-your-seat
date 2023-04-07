@@ -95,7 +95,8 @@ const CollectionSection: FC<{ addr: string }> = ({ addr }) => {
           </button>
         </h2>
         <div className="flex flex-wrap justify-center gap-5">
-          {balanceOfBatch &&
+          {collection.uri &&
+            balanceOfBatch &&
             balanceOfBatch.map((b, i) => (
               <MyTicketCard
                 key={i}
