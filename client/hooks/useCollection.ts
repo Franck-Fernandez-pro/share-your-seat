@@ -178,8 +178,9 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     getAvailableTicket,
     getCollectionBalance,
     withdraw,
-    ticketsLength:
-      ticketsLength && ethers.BigNumber.from(ticketsLength).toNumber(),
+    ticketsLength: ticketsLength
+      ? ethers.BigNumber.from(ticketsLength).toNumber()
+      : 0,
     name: name as string,
     getBalanceOf,
     balanceOfBatch: balanceOfBatch
