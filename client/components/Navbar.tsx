@@ -7,7 +7,6 @@ interface Props {}
 
 const Navbar: FC<Props> = ({}) => {
   const { pathname } = useRouter();
- 
   return (
     <div
       className={`navbar sticky ${
@@ -23,6 +22,9 @@ const Navbar: FC<Props> = ({}) => {
         <ul className="menu menu-horizontal px-1">
           <li>
             <Link href="/event">Événements</Link>
+          </li>
+          <li>
+            <Link href="/user">Mes tickets</Link>
           </li>
         </ul>
       </div>
