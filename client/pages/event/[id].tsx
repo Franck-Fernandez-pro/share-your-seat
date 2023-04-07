@@ -22,8 +22,7 @@ const Event = () => {
     mint,
     getCollectionBalance,
     withdraw,
-    state: { collectionBalance },
-    owner,
+    state: { collectionBalance, owner },
   } = useCollection(id as string);
   const [collection, setCollection] = useState({
     eventName: '',
