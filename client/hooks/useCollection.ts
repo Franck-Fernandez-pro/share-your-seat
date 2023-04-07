@@ -23,34 +23,6 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     signerOrProvider: signerData,
   });
 
-  // const { data: balanceOfBatch } = useContractRead({
-  //   address: addr as `0x${string}`,
-  //   abi: artifact.abi,
-  //   functionName: 'balanceOfBatch',
-  //   enabled: option?.ids ? option?.ids.length > 0 : false,
-  //   args: [option?.ids && option.ids.map(() => address), option?.ids],
-  //   watch: true,
-  // });
-
-  // const { data: owner } = useContractRead({
-  //   address: addr as `0x${string}`,
-  //   abi: artifact.abi,
-  //   functionName: 'owner',
-  // });
-
-  // const { data: ticketsLength } = useContractRead({
-  //   address: addr as `0x${string}`,
-  //   abi: artifact.abi,
-  //   functionName: 'availableTicketsLength',
-  // });
-
-  // const { data: name } = useContractRead({
-  //   address: addr as `0x${string}`,
-  //   abi: artifact.abi,
-  //   functionName: 'name',
-  //   enabled: enabledName,
-  // });
-
   useEffect(() => {
     fetchName();
     fetchTicketsLength();

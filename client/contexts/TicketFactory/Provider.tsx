@@ -80,7 +80,6 @@ export function Provider({ children }: { children: ReactNode }) {
         newCollections.push(ticketFactory.sftCollections(i));
       }
       const response = await Promise.all(newCollections);
-      console.log('response:', response);
 
       setCollections([...response]);
       return response;

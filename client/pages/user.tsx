@@ -19,7 +19,13 @@ const User = () => {
         <div className="hero-content text-center">
           <div className="flex max-w-md items-center">
             <h1 className="text-5xl font-bold">Mes Tickets</h1>
-            <button className="ml-5" onClick={() =>{fetchCollections();fetchSftCollectionsLength()}}>
+            <button
+              className="ml-5"
+              onClick={() => {
+                fetchCollections();
+                fetchSftCollectionsLength();
+              }}
+            >
               <AiOutlineReload className="h-5 w-5" />
             </button>
           </div>
