@@ -1,5 +1,6 @@
 import { FC, useEffect, useState } from 'react';
-import { useCollection } from '@/hooks';
+import { useCollection, useInput } from '@/hooks';
+import { toast } from 'react-toastify';
 
 interface Props {
   uri: string;
@@ -9,6 +10,8 @@ interface Props {
 }
 
 const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
+  const { props: amountField, setValue: setAmount } = useInput<number>(0);
+  const { props: toField, setValue: setToField } = useInput<string>('');
   const {} = useCollection(addr);
   const [data, setData] = useState({
     name: '',
@@ -35,13 +38,62 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
     } catch (error) {}
   }
 
+  function handleSend() {
+    if (amountField.value > balance) {
+      toast.warning(`Vous pouvez envoyer au maximum ${balance} ticket(s)`);
+      return;
+    }
+
+    if (toField.value === '') {
+      toast.warning(`Veuillez entrer un destinataire valide`);
+      return;
+    }
+  }
+
   return balance > 0 ? (
     <div className="card bg-base-100 max-h-[550px] w-80 shadow-xl">
       <div className="card-body items-center text-center">
         <h2 className="card-title self-left mb-5">{data.type}</h2>
         <p>{balance} place(s)</p>
-        <div className="card-actions mt-5 justify-end">
-          <button className="btn btn-primary btn-sm">Envoyer</button>
+        <div className="collapse collapse-arrow w-full rounded-lg bg-gray-100 font-medium">
+          <input type="checkbox" />
+          <div className="collapse-title">Envoyer</div>
+          <div className="collapse-content">
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">Montant</span>
+              </label>
+
+              <input
+                className="input input-sm w-full max-w-xs"
+                type="number"
+                required
+                {...amountField}
+                min="1"
+                max={balance}
+              />
+            </div>
+
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Destinataire</span>
+              </label>
+              <input
+                className="input input-sm w-full"
+                type="text"
+                placeholder="0x1b8D2I..."
+                required
+                {...toField}
+              />
+            </div>
+
+            <button
+              className="btn btn-primary btn-sm mt-3"
+              onClick={handleSend}
+            >
+              Envoyer
+            </button>
+          </div>
         </div>
       </div>
     </div>
