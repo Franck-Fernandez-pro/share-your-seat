@@ -9,9 +9,14 @@ import { AiOutlineReload } from 'react-icons/ai';
 interface Props {}
 
 const MyTickets: FC<Props> = ({}) => {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
   const { address } = useAccount();
   const { collections } = useContext(TicketFactoryContext);
 
+  // ? To avoid NextJS hydration-error -> https://nextjs.org/docs/messages/react-hydration-error
+  if (!mounted) return <></>;
   return address ? (
     <section id="tickets">
       <div className="">
