@@ -64,7 +64,9 @@ export function Provider({ children }: { children: ReactNode }) {
 
   async function fetchCollections() {
     if (!ticketFactory) return;
+    console.log('sftCollectionsLength:', sftCollectionsLength);
     const length = ethers.BigNumber.from(sftCollectionsLength).toNumber();
+    console.log('length:', length);
     if (length === 0) return;
 
     try {
@@ -73,10 +75,12 @@ export function Provider({ children }: { children: ReactNode }) {
         newCollections.push(ticketFactory.sftCollections(i));
       }
       const response = await Promise.all(newCollections);
+      console.log('response:', response);
 
       setCollections([...response]);
       return response;
     } catch (error) {
+      console.log('ERROR HERE')
       console.error(error);
     }
   }
