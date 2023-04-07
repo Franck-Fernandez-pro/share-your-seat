@@ -10,6 +10,10 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     availableTickets: 0,
     collectionBalance: 0,
     balance: 0,
+    balanceOfBatch: [],
+    name: '',
+    ticketsLength: 0,
+    owner: '',
   });
   const { address } = useAccount();
   const { data: signerData } = useSigner();
@@ -19,40 +23,110 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     signerOrProvider: signerData,
   });
 
-  const { data: balanceOfBatch } = useContractRead({
-    address: addr as `0x${string}`,
-    abi: artifact.abi,
-    functionName: 'balanceOfBatch',
-    enabled: option?.ids ? option?.ids.length > 0 : false,
-    args: [option?.ids && option.ids.map(() => address), option?.ids],
-    watch: true,
-  });
+  // const { data: balanceOfBatch } = useContractRead({
+  //   address: addr as `0x${string}`,
+  //   abi: artifact.abi,
+  //   functionName: 'balanceOfBatch',
+  //   enabled: option?.ids ? option?.ids.length > 0 : false,
+  //   args: [option?.ids && option.ids.map(() => address), option?.ids],
+  //   watch: true,
+  // });
 
-  const { data: owner } = useContractRead({
-    address: addr as `0x${string}`,
-    abi: artifact.abi,
-    functionName: 'owner',
-  });
-  console.log('owner:', owner);
+  // const { data: owner } = useContractRead({
+  //   address: addr as `0x${string}`,
+  //   abi: artifact.abi,
+  //   functionName: 'owner',
+  // });
 
-  const { data: ticketsLength } = useContractRead({
-    address: addr as `0x${string}`,
-    abi: artifact.abi,
-    functionName: 'availableTicketsLength',
-  });
-  console.log('ticketsLength:', ticketsLength);
+  // const { data: ticketsLength } = useContractRead({
+  //   address: addr as `0x${string}`,
+  //   abi: artifact.abi,
+  //   functionName: 'availableTicketsLength',
+  // });
 
-  const [enabledName, setEnabledName] = useState(false);
-  const { data: name } = useContractRead({
-    address: addr as `0x${string}`,
-    abi: artifact.abi,
-    functionName: 'name',
-    enabled: enabledName,
-  });
+  // const { data: name } = useContractRead({
+  //   address: addr as `0x${string}`,
+  //   abi: artifact.abi,
+  //   functionName: 'name',
+  //   enabled: enabledName,
+  // });
+
   useEffect(() => {
-    setEnabledName(true);
-  }, []);
-  console.log('name:', name);
+    fetchName();
+    fetchTicketsLength();
+    fetchOwner();
+  }, [addr]);
+
+  useEffect(() => {
+    fetchBalanceOfBatch();
+  }, [option?.ids]);
+
+  async function fetchName() {
+    if (!collection) return;
+
+    try {
+      const response = await collection.name();
+      setState((s) => ({
+        ...s,
+        name: response,
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function fetchTicketsLength() {
+    if (!collection) return;
+
+    try {
+      const response = await collection.ticketsLength();
+      setState((s) => ({
+        ...s,
+        ticketsLength: ethers.BigNumber.from(response).toNumber(),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  async function fetchOwner() {
+    if (!collection) return;
+
+    try {
+      const response = await collection.owner();
+      setState((s) => ({
+        ...s,
+        owner: response,
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function fetchBalanceOfBatch() {
+    if (!collection || !option?.ids) return;
+
+    try {
+      const response = await collection.balanceOfBatch(
+        option.ids.map(() => address),
+        option.ids
+      );
+      setState((s) => ({
+        ...s,
+        balanceOfBatch: response.map((b: any) =>
+          ethers.BigNumber.from(b).toNumber()
+        ),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async function mint(id: number, amount: number, price: number) {
     if (!collection) return;
@@ -186,18 +260,18 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     getAvailableTicket,
     getCollectionBalance,
     withdraw,
-    ticketsLength: ticketsLength
-      ? ethers.BigNumber.from(ticketsLength).toNumber()
-      : 0,
-    name: name as string,
+    // ticketsLength: ticketsLength
+    //   ? ethers.BigNumber.from(ticketsLength).toNumber()
+    //   : 0,
+    // name: name as string,
     getBalanceOf,
-    balanceOfBatch: balanceOfBatch
-      ? // @ts-ignore
-        (balanceOfBatch.map((b: any) =>
-          ethers.BigNumber.from(b).toNumber()
-        ) as number[])
-      : [],
+    // balanceOfBatch: balanceOfBatch
+    //   ? // @ts-ignore
+    //     (balanceOfBatch.map((b: any) =>
+    //       ethers.BigNumber.from(b).toNumber()
+    //     ) as number[])
+    //   : [],
     transfer,
-    owner: owner as string,
+    // owner: owner as string,
   };
 }
