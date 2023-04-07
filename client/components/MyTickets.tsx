@@ -20,7 +20,10 @@ const MyTickets: FC<Props> = ({}) => {
   return address ? (
     <section id="tickets">
       <div className="">
-        {collections && collections.map((addr, idx) => addr)}
+        {collections &&
+          collections.map((addr, idx) => (
+            <CollectionSection key={idx} addr={addr} />
+          ))}
       </div>
     </section>
   ) : (
