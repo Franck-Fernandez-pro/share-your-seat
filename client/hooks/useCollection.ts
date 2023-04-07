@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useAccount, useContract, useSigner } from 'wagmi';
+import { useAccount, useContract, useContractRead, useSigner } from 'wagmi';
 import artifact from '../contracts/TicketSFT.json';
 import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 
-export function useCollection(addr: string) {
+export function useCollection(addr: string, option?: { ids?: number[] }) {
   const [state, setState] = useState({
     ticketPrice: 0,
     availableTickets: 0,
     collectionBalance: 0,
+    balance: 0,
   });
   const { address } = useAccount();
   const { data: signerData } = useSigner();
@@ -18,9 +19,26 @@ export function useCollection(addr: string) {
     signerOrProvider: signerData,
   });
 
-  useEffect(() => {
-    console.log('Collection address', addr);
-  }, [addr]);
+  const { data: balanceOfBatch } = useContractRead({
+    address: addr as `0x${string}`,
+    abi: artifact.abi,
+    functionName: 'balanceOfBatch',
+    enabled: option?.ids ? option?.ids.length > 0 : false,
+    args: [option?.ids && option.ids.map(() => address), option?.ids],
+    watch: true,
+  });
+
+  const { data: ticketsLength } = useContractRead({
+    address: addr as `0x${string}`,
+    abi: artifact.abi,
+    functionName: 'availableTicketsLength',
+  });
+
+  const { data: name } = useContractRead({
+    address: addr as `0x${string}`,
+    abi: artifact.abi,
+    functionName: 'name',
+  });
 
   async function mint(id: number, amount: number, price: number) {
     if (!collection) return;
@@ -48,6 +66,22 @@ export function useCollection(addr: string) {
       setState((s) => ({
         ...s,
         ticketPrice: ethers.BigNumber.from(response).toNumber(),
+      }));
+
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getBalanceOf(id: number) {
+    if (!collection) return;
+
+    try {
+      const response = await collection.balanceOf(address, id);
+      setState((s) => ({
+        ...s,
+        balance: ethers.BigNumber.from(response).toNumber(),
       }));
 
       return response;
@@ -110,5 +144,14 @@ export function useCollection(addr: string) {
     getAvailableTicket,
     getCollectionBalance,
     withdraw,
+    ticketsLength: ethers.BigNumber.from(ticketsLength).toNumber(),
+    name: name as string,
+    getBalanceOf,
+    balanceOfBatch: balanceOfBatch
+      ? // @ts-ignore
+        (balanceOfBatch.map((b: any) =>
+          ethers.BigNumber.from(b).toNumber()
+        ) as number[])
+      : [],
   };
 }
