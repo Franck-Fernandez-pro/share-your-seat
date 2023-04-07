@@ -50,7 +50,18 @@ export function Provider({ children }: { children: ReactNode }) {
     enabled: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined,
     watch: true,
   });
+  console.group('HERE');
   console.log('sftCollectionsLength:', sftCollectionsLength);
+  console.log(
+    'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS:',
+    process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
+  );
+  console.log('artifact.abi:', artifact.abi);
+  console.log(
+    'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined:',
+    process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined
+  );
+  console.groupEnd();
 
   useEffect(() => {
     console.log(
