@@ -37,10 +37,14 @@ export default MyTickets;
 // :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 const CollectionSection: FC<{ addr: string }> = ({ addr }) => {
   const [ids, setIds] = useState<number[]>([]);
+  console.log('ids:', ids);
   const {
     handler: { fetchCollection },
   } = useContext(TicketFactoryContext);
   const { ticketsLength, name, balanceOfBatch } = useCollection(addr, { ids });
+  console.log('balanceOfBatch:', balanceOfBatch);
+  console.log('name:', name);
+  console.log('ticketsLength:', ticketsLength);
   const [collection, setCollection] = useState({
     eventName: '',
     uri: '',

@@ -9,7 +9,6 @@ import {
 import {
   useContract,
   useContractEvent,
-  useContractRead,
   useSigner,
 } from 'wagmi';
 import artifact from '../../contracts/TicketFactory.json';
@@ -20,7 +19,7 @@ import { ethers } from 'ethers';
 export function Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [collections, setCollections] = useState<string[]>([]);
-  const [len, setLen] = useState(0);
+  const [sftCollectionsLength, setSftCollectionsLength] = useState<number>(0);
   const { data: signerData } = useSigner();
   const ticketFactory = useContract({
     address: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS,
@@ -44,26 +43,6 @@ export function Provider({ children }: { children: ReactNode }) {
     },
   });
 
-  const { data: sftCollectionsLength } = useContractRead({
-    address: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS as `0x${string}`,
-    abi: artifact.abi,
-    functionName: 'getSftCollectionsLength',
-    enabled: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined,
-    watch: true,
-  });
-  // console.group('HERE');
-  // console.log('sftCollectionsLength:', sftCollectionsLength);
-  // console.log(
-  //   'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS:',
-  //   process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
-  // );
-  // console.log('artifact.abi:', artifact.abi);
-  // console.log(
-  //   'process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined:',
-  //   process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined
-  // );
-  // console.groupEnd();
-
   useEffect(() => {
     console.log(
       'Factory address',
@@ -74,20 +53,15 @@ export function Provider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchCollections();
-  }, [len]);
+  }, [sftCollectionsLength]);
 
   async function fetchSftCollectionsLength() {
     if (!ticketFactory) return;
 
     try {
       const response = await ticketFactory.getSftCollectionsLength();
-      console.log('fetchSftCollectionsLength response:', response);
-      console.log(
-        'fetchSftCollectionsLength r:',
-        ethers.BigNumber.from(response).toNumber()
-      );
       if (response) {
-        setLen(ethers.BigNumber.from(response).toNumber());
+        setSftCollectionsLength(ethers.BigNumber.from(response).toNumber());
       }
       return response;
     } catch (error) {
@@ -97,16 +71,12 @@ export function Provider({ children }: { children: ReactNode }) {
   }
 
   async function fetchCollections() {
-    if (!ticketFactory || !len) return;
-    console.log('len:', len);
-    // const length = ethers.BigNumber.from(len).toNumber();
-    const length = len;
-    console.log('length:', length);
-    if (length === 0) return;
+    if (!ticketFactory || !sftCollectionsLength) return;
+    if (sftCollectionsLength === 0) return;
 
     try {
       const newCollections = [];
-      for (let i = 0; i < length; i++) {
+      for (let i = 0; i < sftCollectionsLength; i++) {
         newCollections.push(ticketFactory.sftCollections(i));
       }
       const response = await Promise.all(newCollections);
@@ -115,7 +85,6 @@ export function Provider({ children }: { children: ReactNode }) {
       setCollections([...response]);
       return response;
     } catch (error) {
-      console.log('ERROR HERE');
       console.error(error);
     }
   }
