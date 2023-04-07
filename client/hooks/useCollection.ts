@@ -42,11 +42,16 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
   });
   console.log('ticketsLength:', ticketsLength);
 
+  const [enabledName, setEnabledName] = useState(false);
   const { data: name } = useContractRead({
     address: addr as `0x${string}`,
     abi: artifact.abi,
     functionName: 'name',
+    enabled: enabledName,
   });
+  useEffect(() => {
+    setEnabledName(true);
+  }, []);
   console.log('name:', name);
 
   async function mint(id: number, amount: number, price: number) {
