@@ -28,6 +28,12 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     watch: true,
   });
 
+  const { data: owner } = useContractRead({
+    address: addr as `0x${string}`,
+    abi: artifact.abi,
+    functionName: 'owner',
+  });
+
   const { data: ticketsLength } = useContractRead({
     address: addr as `0x${string}`,
     abi: artifact.abi,
@@ -172,7 +178,8 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     getAvailableTicket,
     getCollectionBalance,
     withdraw,
-    ticketsLength: ethers.BigNumber.from(ticketsLength).toNumber(),
+    ticketsLength:
+      ticketsLength && ethers.BigNumber.from(ticketsLength).toNumber(),
     name: name as string,
     getBalanceOf,
     balanceOfBatch: balanceOfBatch
@@ -182,5 +189,6 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
         ) as number[])
       : [],
     transfer,
+    owner: owner as string,
   };
 }

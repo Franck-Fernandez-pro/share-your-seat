@@ -9,8 +9,11 @@ import { AiFillCalendar, AiFillHome, AiOutlineReload } from 'react-icons/ai';
 import { useAccount } from 'wagmi';
 
 const Event = () => {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const router = useRouter();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const { id } = router.query;
   const {
     handler: { fetchCollection },
@@ -20,6 +23,7 @@ const Event = () => {
     getCollectionBalance,
     withdraw,
     state: { collectionBalance },
+    owner,
   } = useCollection(id as string);
   const [collection, setCollection] = useState({
     eventName: '',
@@ -97,7 +101,8 @@ const Event = () => {
   function handleMint(ticketId: number, amount: number, price: number) {
     mint && mint(ticketId, amount, price);
   }
-
+  // ? To avoid NextJS hydration-error -> https://nextjs.org/docs/messages/react-hydration-error
+  if (!mounted) return <></>;
   return (
     <>
       <Head>
@@ -124,16 +129,18 @@ const Event = () => {
                 <AiFillCalendar className="h-4 w-4" /> {data.properties.date}
               </p>
             )}
-            <button
-              className="btn btn-accent btn-sm mt-5"
-              disabled={collectionBalance === 0}
-              onClick={withdraw}
-            >
-              Withdraw{' '}
-              {collectionBalance
-                ? `${collectionBalance} Wei`
-                : collectionBalance}
-            </button>
+            {owner === address && (
+              <button
+                className="btn btn-accent btn-sm mt-5"
+                disabled={collectionBalance === 0}
+                onClick={withdraw}
+              >
+                Withdraw{' '}
+                {collectionBalance
+                  ? `${collectionBalance} Wei`
+                  : collectionBalance}
+              </button>
+            )}
           </div>
         </div>
       </div>
