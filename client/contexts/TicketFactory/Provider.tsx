@@ -84,10 +84,10 @@ export function Provider({ children }: { children: ReactNode }) {
       console.log('fetchSftCollectionsLength response:', response);
       console.log(
         'fetchSftCollectionsLength r:',
-        setLen(ethers.BigNumber.from(response).toNumber)
+        ethers.BigNumber.from(response).toNumber()
       );
       if (response) {
-        setLen(ethers.BigNumber.from(response).toNumber);
+        setLen(ethers.BigNumber.from(response).toNumber());
       }
       return response;
     } catch (error) {
