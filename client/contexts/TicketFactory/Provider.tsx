@@ -50,6 +50,7 @@ export function Provider({ children }: { children: ReactNode }) {
     enabled: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined,
     watch: true,
   });
+  console.log('sftCollectionsLength:', sftCollectionsLength);
 
   useEffect(() => {
     console.log(
@@ -63,7 +64,7 @@ export function Provider({ children }: { children: ReactNode }) {
   }, [sftCollectionsLength]);
 
   async function fetchCollections() {
-    if (!ticketFactory) return;
+    if (!ticketFactory || !sftCollectionsLength) return;
     console.log('sftCollectionsLength:', sftCollectionsLength);
     const length = ethers.BigNumber.from(sftCollectionsLength).toNumber();
     console.log('length:', length);
@@ -80,7 +81,7 @@ export function Provider({ children }: { children: ReactNode }) {
       setCollections([...response]);
       return response;
     } catch (error) {
-      console.log('ERROR HERE')
+      console.log('ERROR HERE');
       console.error(error);
     }
   }
