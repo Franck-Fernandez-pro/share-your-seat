@@ -1,5 +1,5 @@
 import { TicketFactoryContext } from '@/contexts/TicketFactory';
-import { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import MyTicketCard from './MyTicketCard';
 import { useCollection } from '@/hooks';
