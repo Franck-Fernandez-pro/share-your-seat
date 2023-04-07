@@ -12,7 +12,7 @@ interface Props {
 const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
   const { props: amountField, setValue: setAmount } = useInput<number>(0);
   const { props: toField, setValue: setToField } = useInput<string>('');
-  const {} = useCollection(addr);
+  const { transfer } = useCollection(addr);
   const [data, setData] = useState({
     name: '',
     description: '',
@@ -30,7 +30,6 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
   }, []);
 
   async function fetchMetadata() {
-    console.log('uri:', uri);
     try {
       const response = await fetch(uri);
       const data = await response.json();
@@ -38,7 +37,7 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
     } catch (error) {}
   }
 
-  function handleSend() {
+  async function handleSend() {
     if (amountField.value > balance) {
       toast.warning(`Vous pouvez envoyer au maximum ${balance} ticket(s)`);
       return;
@@ -48,6 +47,10 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
       toast.warning(`Veuillez entrer un destinataire valide`);
       return;
     }
+
+    await transfer(toField.value, parseInt(id), amountField.value);
+    setAmount(0);
+    setToField('');
   }
 
   return balance > 0 ? (
@@ -90,6 +93,7 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
             <button
               className="btn btn-primary btn-sm mt-3"
               onClick={handleSend}
+              disabled={amountField.value === 0 || toField.value === ''}
             >
               Envoyer
             </button>

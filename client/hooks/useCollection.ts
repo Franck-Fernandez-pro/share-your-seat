@@ -137,6 +137,34 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     }
   }
 
+  async function transfer(to: string, id: number, amount: number) {
+    if (!collection) return;
+    const toastId = toast.loading('Chargement...');
+    try {
+      const response = await collection.safeTransferFrom(
+        address,
+        to,
+        id,
+        amount,
+        '0x'
+      );
+
+      toast.update(toastId, {
+        render: 'Transfer réussi',
+        type: 'success',
+        isLoading: false,
+      });
+      return response;
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Une erreur s'est produite",
+        type: 'error',
+        isLoading: false,
+      });
+      console.error(error);
+    }
+  }
+
   return {
     state,
     mint,
@@ -153,5 +181,6 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
           ethers.BigNumber.from(b).toNumber()
         ) as number[])
       : [],
+    transfer,
   };
 }
