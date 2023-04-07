@@ -1,6 +1,8 @@
 import { TicketFactoryContext } from '@/contexts/TicketFactory';
 import { useInput } from '@/hooks';
 import { FC, useContext } from 'react';
+import ApiKeysForm from './ApiKeysForm';
+import PinMetadata from './PinMetadataForm';
 
 interface Props {}
 
@@ -40,10 +42,12 @@ const CreateEventForm: FC<Props> = ({}) => {
 
   return (
     <div className="mx-auto max-w-3xl p-10">
-      {/* <ApiKeysForm />
-      <div className="divider" />
-      <PinMetadata />
-      <div className="divider" /> */}
+      {/* <div className=''>
+        <ApiKeysForm />
+        <div className="divider" />
+        <PinMetadata />
+        <div className="divider" />
+      </div> */}
 
       <div className="[&_.form-control]:mb-5">
         <h2 className="mb-6 text-center text-2xl font-bold">
