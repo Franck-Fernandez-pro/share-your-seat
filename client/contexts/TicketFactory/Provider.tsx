@@ -184,6 +184,8 @@ export function Provider({ children }: { children: ReactNode }) {
           fetchTicketCreatedEvent,
           fetchCollection,
           fetchCollections,
+          //@ts-ignore
+          fetchSftCollectionsLength
         },
       }}
     >
