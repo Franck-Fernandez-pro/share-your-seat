@@ -14,7 +14,7 @@ const User = () => {
         <title>User</title>
       </Head>
 
-      <div className="hero bg-base-200 min-h-[200px]">
+      <div className="hero bg-base-200 mb-5 min-h-[200px]">
         <div className="hero-content text-center">
           <div className="flex max-w-md items-center">
             <h1 className="text-5xl font-bold">Mes Tickets</h1>

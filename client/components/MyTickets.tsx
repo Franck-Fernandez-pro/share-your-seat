@@ -83,7 +83,7 @@ const CollectionSection: FC<{ addr: string }> = ({ addr }) => {
   return shouldRender(balanceOfBatch) ? (
     <>
       <div>
-        <h2 className="mx-auto text-center text-2xl font-extrabold">
+        <h2 className="mx-auto my-5 text-center text-2xl font-extrabold">
           {name && name}
           <button
             className="ml-5"

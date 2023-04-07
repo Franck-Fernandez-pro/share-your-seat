@@ -35,7 +35,12 @@ export default function App({ Component, pageProps }: AppProps) {
         <Provider>
           <Layout>
             <Component {...pageProps} />
-            <ToastContainer position="bottom-left" hideProgressBar />
+            <ToastContainer
+              closeOnClick
+              position="bottom-left"
+              hideProgressBar
+              autoClose={300}
+            />
           </Layout>
         </Provider>
       </RainbowKitProvider>
