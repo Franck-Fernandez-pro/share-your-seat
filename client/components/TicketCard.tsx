@@ -16,7 +16,7 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
     state: { ticketPrice, availableTickets },
   } = useCollection(addr);
   const [data, setData] = useState({
-    name: 'qsd',
+    name: '',
     description: '',
     image: '',
     type: '',
