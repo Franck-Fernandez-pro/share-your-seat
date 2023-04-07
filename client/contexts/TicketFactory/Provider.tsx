@@ -19,7 +19,8 @@ import { ethers } from 'ethers';
 
 export function Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [collections, setCollections] = useState<string[]>([]);
+  const [collections, setCollections] = useState<string[]>([])
+  const [len, setLen] = useState(0);
   const { data: signerData } = useSigner();
   const ticketFactory = useContract({
     address: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS,
@@ -68,11 +69,28 @@ export function Provider({ children }: { children: ReactNode }) {
       'Factory address',
       process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
     );
+    fetchSftCollectionsLength()
   }, []);
 
   useEffect(() => {
     fetchCollections();
-  }, [sftCollectionsLength]);
+  }, [len]);
+
+  async function fetchSftCollectionsLength() {
+    if (!ticketFactory) return;
+
+    try {
+      const response = await ticketFactory.getSftCollectionsLength();
+      console.log('fetchSftCollectionsLength response:', response);
+      if (response) {
+        setLen(ethers.BigNumber.from(response).toNumber)
+      }
+      return response;
+    } catch (error) {
+      console.error(error);
+      toast.error("Une erreur s'est produite");
+    }
+  }
 
   async function fetchCollections() {
     if (!ticketFactory || !sftCollectionsLength) return;
