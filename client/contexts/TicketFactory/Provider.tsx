@@ -1,18 +1,25 @@
 'use client';
-import { ReactNode, useCallback, useEffect, useReducer } from 'react';
+import { ReactNode, useCallback, useEffect, useReducer, useState } from 'react';
 import {
   TicketFactoryContext,
   reducer,
   initialState,
   ActionType,
 } from './index';
-import { useContract, useContractEvent, useSigner } from 'wagmi';
+import {
+  useContract,
+  useContractEvent,
+  useContractRead,
+  useSigner,
+} from 'wagmi';
 import artifact from '../../contracts/TicketFactory.json';
 import { TicketCreated } from '@/types/context';
 import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
 
 export function Provider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const [collections, setCollections] = useState<string[]>([]);
   const { data: signerData } = useSigner();
   const ticketFactory = useContract({
     address: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS,
@@ -36,12 +43,43 @@ export function Provider({ children }: { children: ReactNode }) {
     },
   });
 
+  const { data: sftCollectionsLength } = useContractRead({
+    address: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS as `0x${string}`,
+    abi: artifact.abi,
+    functionName: 'getSftCollectionsLength',
+    enabled: process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS !== undefined,
+    watch: true,
+  });
+
   useEffect(() => {
     console.log(
       'Factory address',
       process.env.NEXT_PUBLIC_TICKET_FACTORY_ADDRESS
     );
   }, []);
+
+  useEffect(() => {
+    fetchCollections();
+  }, [sftCollectionsLength]);
+
+  async function fetchCollections() {
+    if (!ticketFactory) return;
+    const length = ethers.BigNumber.from(sftCollectionsLength).toNumber();
+    if (length === 0) return;
+
+    try {
+      const newCollections = [];
+      for (let i = 0; i < length; i++) {
+        newCollections.push(ticketFactory.sftCollections(i));
+      }
+      const response = await Promise.all(newCollections);
+
+      setCollections([...response]);
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const fetchTicketCreatedEvent = useCallback(async () => {
     if (!ticketFactory) return;
@@ -106,10 +144,12 @@ export function Provider({ children }: { children: ReactNode }) {
       value={{
         state,
         dispatch,
+        collections,
         handler: {
           deployEvent,
           fetchTicketCreatedEvent,
           fetchCollection,
+          fetchCollections,
         },
       }}
     >

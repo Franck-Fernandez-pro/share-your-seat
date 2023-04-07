@@ -16,15 +16,17 @@ type State = {
 type AppContext = {
   state: State;
   dispatch: Dispatch<Action>;
+  collections: string[]
   handler: {
     deployEvent: (
       eventName: string,
       uri: string,
       ticketPrices: number[],
       availableTickets: number[]
-    ) => Promise<any>;
-    fetchTicketCreatedEvent: () => void;
-    fetchCollection: (addr: string) => Promise<any>;
+      ) => Promise<any>;
+      fetchTicketCreatedEvent: () => void;
+      fetchCollection: (addr: string) => Promise<any>;
+      fetchCollections: () => Promise<any>;
   };
 };
 

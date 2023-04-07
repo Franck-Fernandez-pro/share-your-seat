@@ -42,6 +42,12 @@ contract TicketFactory {
             .availableTicketsLength();
     }
 
+    /// Return sftCollections length
+    /// @return length sftCollections length
+    function getSftCollectionsLength() public view returns (uint256) {
+        return sftCollections.length;
+    }
+
     /// Deploys a ERC-1155 token with given parameters - returns deployed address
     /// @param _eventName Name of ERC-1155 collection
     /// @param _uri URI resolving hosted metadata
