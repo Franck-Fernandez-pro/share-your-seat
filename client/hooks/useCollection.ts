@@ -80,7 +80,7 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     if (!collection) return;
 
     try {
-      const response = await collection.ticketsLength();
+      const response = await collection.availableTicketsLength();
       setState((s) => ({
         ...s,
         ticketsLength: ethers.BigNumber.from(response).toNumber(),
