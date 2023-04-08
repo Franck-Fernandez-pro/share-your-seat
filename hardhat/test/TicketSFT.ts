@@ -43,27 +43,45 @@ describe('TicketSFT', () => {
       expect(await ticketSFT.availableTickets(2)).to.equal(availableTickets[2]);
     });
 
-    it('should revert if the ticket prices and available tickets array have different lengths', async () => {
-      const ticketSFTFactory = await ethers.getContractFactory('TicketSFT');
-      const invalidTicketPrices = [10, 20];
-      const invalidAvailableTickets = [100, 200, 300];
+    it('should set the availableTicketsLength correctly', async () => {
+      const { ticketSFT } = await loadFixture(deployTicketSFTFixture);
 
-      await expect(
-        ticketSFTFactory.deploy(
-          name,
-          uri,
-          invalidTicketPrices,
-          invalidAvailableTickets
-        )
-      ).to.be.revertedWith('Provided array have not same length');
+      expect(await ticketSFT.availableTicketsLength()).to.equal(
+        availableTickets.length
+      );
     });
 
-    it('should revert if the URI is empty', async () => {
-      const ticketSFTFactory = await ethers.getContractFactory('TicketSFT');
+    it('should set the tickets prices correctly', async () => {
+      const { ticketSFT } = await loadFixture(deployTicketSFTFixture);
 
-      await expect(
-        ticketSFTFactory.deploy(name, '', ticketPrices, availableTickets)
-      ).to.be.revertedWith('_uri is empty');
+      expect(await ticketSFT.ticketPrices(0)).to.equal(ticketPrices[0]);
+      expect(await ticketSFT.ticketPrices(1)).to.equal(ticketPrices[1]);
+      expect(await ticketSFT.ticketPrices(2)).to.equal(ticketPrices[2]);
+    });
+
+    describe('Revert', () => {
+      it('should revert if the ticket prices and available tickets array have different lengths', async () => {
+        const ticketSFTFactory = await ethers.getContractFactory('TicketSFT');
+        const invalidTicketPrices = [10, 20];
+        const invalidAvailableTickets = [100, 200, 300];
+
+        await expect(
+          ticketSFTFactory.deploy(
+            name,
+            uri,
+            invalidTicketPrices,
+            invalidAvailableTickets
+          )
+        ).to.be.revertedWith('Provided array have not same length');
+      });
+
+      it('should revert if the URI is empty', async () => {
+        const ticketSFTFactory = await ethers.getContractFactory('TicketSFT');
+
+        await expect(
+          ticketSFTFactory.deploy(name, '', ticketPrices, availableTickets)
+        ).to.be.revertedWith('_uri is empty');
+      });
     });
   });
 
@@ -77,25 +95,202 @@ describe('TicketSFT', () => {
     });
   });
 
-  describe('mint', () => {
+  describe('mint()', () => {
     it('should mint the correct amount of tokens to the correct account', async () => {
-      const { ticketSFT, ownerAddr, otherAddr } = await loadFixture(
+      const { ticketSFT, ownerAddr } = await loadFixture(
         deployTicketSFTFixture
       );
       const tokenId = 0;
       const amount = 10;
-      const tx = await ticketSFT.mint(otherAddr, tokenId, amount);
+      const tx = await ticketSFT.mint(ownerAddr, tokenId, amount, {
+        value: ticketPrices[0] * amount,
+      });
 
-      expect(await ticketSFT.balanceOf(otherAddr, tokenId)).to.equal(amount);
-      expect(tx)
-        .to.emit(ticketSFT, 'TransferSingle')
-        .withArgs(
-          ownerAddr,
-          ethers.constants.AddressZero,
-          otherAddr,
-          tokenId,
-          amount
+      expect(await ticketSFT.balanceOf(ownerAddr, tokenId)).to.equal(amount);
+    });
+
+    describe('Event', () => {
+      it('should emit TicketCreated event', async () => {
+        const { ticketSFT, ownerAddr } = await loadFixture(
+          deployTicketSFTFixture
         );
+        const tokenId = 0;
+        const amount = 10;
+        const response = await ticketSFT.mint(ownerAddr, tokenId, amount, {
+          value: ticketPrices[0] * amount,
+        });
+
+        await expect(response)
+          .to.emit(ticketSFT, 'TicketMinted')
+          .withArgs(ownerAddr, ticketSFT.address, amount, tokenId);
+      });
+    });
+
+    describe('Revert', () => {
+      it('should revert without value', async () => {
+        const { ticketSFT, ownerAddr } = await loadFixture(
+          deployTicketSFTFixture
+        );
+        const tokenId = 0;
+        const amount = 10;
+
+        await expect(
+          ticketSFT.mint(ownerAddr, tokenId, amount, { value: 0 })
+        ).to.be.revertedWith('Not enough wei sended');
+      });
+    });
+  });
+
+  describe('mintBatch()', () => {
+    it('should mintBatch the correct amount of tokens', async () => {
+      const { ticketSFT, ownerAddr } = await loadFixture(
+        deployTicketSFTFixture
+      );
+      const tokenIds = [0, 1];
+      const amount = [10, 5];
+      const price = amount[0] * ticketPrices[0] + amount[1] * ticketPrices[1];
+      await ticketSFT.mintBatch(ownerAddr, tokenIds, amount, '0x', {
+        value: price,
+      });
+
+      expect(await ticketSFT.balanceOf(ownerAddr, tokenIds[0])).to.equal(
+        amount[0]
+      );
+      expect(await ticketSFT.balanceOf(ownerAddr, tokenIds[1])).to.equal(
+        amount[1]
+      );
+    });
+
+    describe('Event', () => {
+      it('should emit TicketCreated event', async () => {
+        const { ticketSFT, ownerAddr } = await loadFixture(
+          deployTicketSFTFixture
+        );
+        const tokenIds = [0, 1];
+        const amount = [10, 5];
+        const price = amount[0] * ticketPrices[0] + amount[1] * ticketPrices[1];
+        const response = await ticketSFT.mintBatch(
+          ownerAddr,
+          tokenIds,
+          amount,
+          '0x',
+          {
+            value: price,
+          }
+        );
+
+        await expect(response)
+          .to.emit(ticketSFT, 'TicketMintedBatch')
+          .withArgs(ownerAddr, ticketSFT.address, amount, tokenIds);
+      });
+    });
+
+    describe('Revert', () => {
+      it('should revert without value', async () => {
+        const { ticketSFT, ownerAddr } = await loadFixture(
+          deployTicketSFTFixture
+        );
+        const tokenId = 0;
+        const amount = 10;
+
+        await expect(
+          ticketSFT.mint(ownerAddr, tokenId, amount, { value: 0 })
+        ).to.be.revertedWith('Not enough wei sended');
+      });
+    });
+  });
+
+  describe('withdraw()', () => {
+    it('should emit TicketCreated event', async () => {
+      const { ticketSFT, ownerAddr, owner } = await loadFixture(
+        deployTicketSFTFixture
+      );
+      const amount = ethers.utils.parseEther('1.0');
+      const balanceBeforeSend = await owner.getBalance();
+      await owner.sendTransaction({
+        to: ticketSFT.address,
+        value: amount,
+      });
+      const balanceAfterSend = await owner.getBalance();
+      await ticketSFT.withdraw(ownerAddr);
+      const balanceAfterWithdraw = await owner.getBalance();
+
+      expect(balanceBeforeSend).to.be.greaterThan(balanceAfterSend);
+      expect(balanceAfterWithdraw).to.be.greaterThan(balanceAfterSend);
+    });
+
+    describe('Event', () => {
+      it('should emit TicketCreated event', async () => {
+        const { ticketSFT, ownerAddr, owner } = await loadFixture(
+          deployTicketSFTFixture
+        );
+        await owner.sendTransaction({
+          to: ticketSFT.address,
+          value: ethers.utils.parseEther('1.0'), // Sends exactly 1.0 ether
+        });
+        const response = await ticketSFT.withdraw(ownerAddr);
+
+        await expect(response)
+          .to.emit(ticketSFT, 'Withdraw')
+          .withArgs(ownerAddr, ethers.utils.parseEther('1.0'));
+      });
+    });
+
+    describe('Revert', () => {
+      it('should be onlyOwner', async () => {
+        const { ticketSFT, other, otherAddr } = await loadFixture(
+          deployTicketSFTFixture
+        );
+        await expect(
+          ticketSFT.connect(other).withdraw(otherAddr)
+        ).to.be.revertedWith('Ownable: caller is not the owner');
+      });
+    });
+  });
+
+  describe('collectionBalance()', () => {
+    it('should return contract balance', async () => {
+      const { ticketSFT, owner } = await loadFixture(deployTicketSFTFixture);
+      const amount = ethers.utils.parseEther('1.0');
+      await owner.sendTransaction({
+        to: ticketSFT.address,
+        value: amount,
+      });
+      const response = await ticketSFT.collectionBalance();
+
+      expect(response).to.be.eq(amount);
+    });
+  });
+
+  describe('receive()', () => {
+    it('should emit Deposit event', async () => {
+      const { ticketSFT, ownerAddr, owner } = await loadFixture(
+        deployTicketSFTFixture
+      );
+      const amount = ethers.utils.parseEther('1.0');
+      const response = await owner.sendTransaction({
+        to: ticketSFT.address,
+        value: amount,
+      });
+
+      await expect(response)
+        .to.emit(ticketSFT, 'Deposit')
+        .withArgs(ownerAddr, amount);
+    });
+  });
+
+  describe.only('receive()', () => {
+    it('should invoke the fallback function', async () => {
+      const { ticketSFT, ownerAddr, owner } = await loadFixture(
+        deployTicketSFTFixture
+      );
+      const response = await owner.sendTransaction({
+        to: ticketSFT.address
+      });
+
+      await expect(response)
+        .to.emit(ticketSFT, 'FallbackEvent')
+        .withArgs(ownerAddr);
     });
   });
 });
