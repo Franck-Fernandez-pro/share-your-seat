@@ -19,7 +19,7 @@ async function deployTicketFactoryFixture() {
   return { ticketFactory, owner, ownerAddr, other, otherAddr };
 }
 
-describe.only('TicketFactory', () => {
+describe('TicketFactory', () => {
   describe('deployTicket()', () => {
     it('should store deployed ERC-1155 address in sftCollections', async () => {
       const { ticketFactory } = await loadFixture(deployTicketFactoryFixture);
