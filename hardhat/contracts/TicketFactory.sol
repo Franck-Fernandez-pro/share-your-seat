@@ -20,6 +20,7 @@ contract TicketFactory {
     // Emitted when ERC-1155 collection is deployed
     event TicketCreated(address owner, address collectionAddress, string name);
 
+    // :::::::::::::::::::::: FUNCTIONS ::::::::::::::::::::::
     /// Return collection onChain data
     /// @param _addr Contract address
     /// @return eventName Contract name
@@ -57,7 +58,7 @@ contract TicketFactory {
         string memory _eventName,
         string memory _uri,
         uint256[] memory _ticketPrices,
-        uint16[] memory _availableTickets
+        uint256[] memory _availableTickets
     ) public {
         require(bytes(_eventName).length != 0, "_eventName is empty");
         require(bytes(_uri).length != 0, "_uri is empty");

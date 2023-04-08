@@ -84,22 +84,6 @@ contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
     }
 
     // :::::::::::::::::::::: FUNCTIONS ::::::::::::::::::::::
-    /// Set uri
-    /// @param _tokenId id used to build complete uri
-    /// @return metadata url
-    function uri(
-        uint256 _tokenId
-    ) public view override returns (string memory) {
-        return
-            string(
-                abi.encodePacked(
-                    baseMetadataURI,
-                    Strings.toString(_tokenId),
-                    ".json"
-                )
-            );
-    }
-
     /// Mint token
     /// @param _account address to mint the token to
     /// @param _id ID being minted
@@ -161,5 +145,21 @@ contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
 
     function collectionBalance() external view returns (uint256) {
         return address(this).balance;
+    }
+
+    /// Set uri
+    /// @param _tokenId id used to build complete uri
+    /// @return metadata url
+    function uri(
+        uint256 _tokenId
+    ) public view override returns (string memory) {
+        return
+            string(
+                abi.encodePacked(
+                    baseMetadataURI,
+                    Strings.toString(_tokenId),
+                    ".json"
+                )
+            );
     }
 }
