@@ -19,8 +19,8 @@ async function deployTicketFactoryFixture() {
   return { ticketFactory, owner, ownerAddr, other, otherAddr };
 }
 
-describe('TicketFactory', () => {
-  describe('deployTicket', () => {
+describe.only('TicketFactory', () => {
+  describe('deployTicket()', () => {
     it('should store deployed ERC-1155 address in sftCollections', async () => {
       const { ticketFactory } = await loadFixture(deployTicketFactoryFixture);
       const response = await ticketFactory.deployTicket(
@@ -53,15 +53,22 @@ describe('TicketFactory', () => {
 
       const name = await ticketSFT.name();
       const baseMetadataURI = await ticketSFT.baseMetadataURI();
-      const availableTs0 = await ticketSFT.availableTickets(0);
-      const availableTs1 = await ticketSFT.availableTickets(1);
-      const availableTs2 = await ticketSFT.availableTickets(2);
+      const available0 = await ticketSFT.availableTickets(0);
+      const available1 = await ticketSFT.availableTickets(1);
+      const available2 = await ticketSFT.availableTickets(2);
+
+      const ticketPrice0 = await ticketSFT.ticketPrices(0);
+      const ticketPrice1 = await ticketSFT.ticketPrices(1);
+      const ticketPrice2 = await ticketSFT.ticketPrices(2);
 
       expect(name).to.equal(eventName);
       expect(baseMetadataURI).to.equal(uri);
-      expect(availableTs0).to.equal(availableTickets[0]);
-      expect(availableTs1).to.equal(availableTickets[1]);
-      expect(availableTs2).to.equal(availableTickets[2]);
+      expect(available0).to.equal(availableTickets[0]);
+      expect(available1).to.equal(availableTickets[1]);
+      expect(available2).to.equal(availableTickets[2]);
+      expect(ticketPrice0).to.equal(ticketPrices[0]);
+      expect(ticketPrice1).to.equal(ticketPrices[1]);
+      expect(ticketPrice2).to.equal(ticketPrices[2]);
     });
 
     it('should emit TicketCreated event', async () => {
@@ -125,6 +132,62 @@ describe('TicketFactory', () => {
         await expect(
           ticketFactory.deployTicket(eventName, uri, [1, 2], [1])
         ).to.be.revertedWith('Provided array have not same length');
+      });
+    });
+
+    describe('getCollection()', () => {
+      it('should return values passed to deployTicket()', async () => {
+        const { ticketFactory } = await loadFixture(deployTicketFactoryFixture);
+        const response = await ticketFactory.deployTicket(
+          eventName,
+          uri,
+          ticketPrices,
+          availableTickets
+        );
+        const receipt = await response.wait();
+        const event =
+          receipt.events &&
+          receipt.events.find(({ event }) => event === 'TicketCreated');
+        const collectionAddress = event?.args
+          ? event.args.collectionAddress
+          : '';
+        const resp = await ticketFactory.getCollection(collectionAddress);
+
+        expect(resp.eventName).to.equal(eventName);
+        expect(resp.uri).to.equal(uri);
+        expect(resp.availableTicketsLength).to.equal(availableTickets.length);
+      });
+    });
+
+    describe('indexToOwner mapping', () => {
+      it('deployed 1155 owner should be caller of TicketFactory', async () => {
+        const { ticketFactory, ownerAddr } = await loadFixture(
+          deployTicketFactoryFixture
+        );
+        await ticketFactory.deployTicket(
+          eventName,
+          uri,
+          ticketPrices,
+          availableTickets
+        );
+        const indexToOwner = await ticketFactory.indexToOwner(0);
+
+        expect(indexToOwner).to.equal(ownerAddr);
+      });
+    });
+
+    describe('getSftCollectionsLength()', () => {
+      it('should return sftCollections.length', async () => {
+        const { ticketFactory } = await loadFixture(deployTicketFactoryFixture);
+        await ticketFactory.deployTicket(
+          eventName,
+          uri,
+          ticketPrices,
+          availableTickets
+        );
+        const length = await ticketFactory.getSftCollectionsLength();
+
+        expect(length).to.equal(1);
       });
     });
   });
