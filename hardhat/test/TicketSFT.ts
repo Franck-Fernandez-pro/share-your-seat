@@ -279,7 +279,7 @@ describe('TicketSFT', () => {
     });
   });
 
-  describe.only('receive()', () => {
+  describe('receive()', () => {
     it('should invoke the fallback function', async () => {
       const { ticketSFT, ownerAddr, owner } = await loadFixture(
         deployTicketSFTFixture
