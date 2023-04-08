@@ -58,7 +58,7 @@ contract TicketFactory {
         string memory _uri,
         uint256[] memory _ticketPrices,
         uint16[] memory _availableTickets
-    ) public returns (address) {
+    ) public {
         require(bytes(_eventName).length != 0, "_eventName is empty");
         require(bytes(_uri).length != 0, "_uri is empty");
         require(
@@ -78,10 +78,9 @@ contract TicketFactory {
         );
         sftCollections.push(t);
         contractToCollection[address(t)] = t;
-        indexToOwner[sftCollections.length - 1] = tx.origin;
+        indexToOwner[sftCollections.length - 1] = msg.sender;
+        t.transferOwnership(msg.sender);
 
         emit TicketCreated(msg.sender, address(t), t.name());
-
-        return address(t);
     }
 }

@@ -55,7 +55,7 @@ contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
         availableTickets = _availableTickets;
         availableTicketsLength = _availableTickets.length;
         ticketPrices = _ticketPrices;
-        transferOwnership(tx.origin);
+        transferOwnership(msg.sender);
     }
 
     // :::::::::::::::::::::: FUNCTIONS ::::::::::::::::::::::
