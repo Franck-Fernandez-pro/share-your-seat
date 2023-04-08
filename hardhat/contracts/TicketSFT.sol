@@ -80,6 +80,7 @@ contract TicketSFT is ERC1155, Ownable, ReentrancyGuard {
     }
 
     fallback() external payable {
+        require(msg.data.length == 0, "No data provided");
         emit FallbackEvent(msg.sender);
     }
 
