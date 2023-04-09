@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { ethers } from 'ethers';
 
 export function useMarketplace() {
+  const [balance, setBalance] = useState<number>(0);
   const [supply, setSupply] = useState({
     available: 0,
     price: 0,
@@ -22,6 +23,7 @@ export function useMarketplace() {
       'Marketplace address',
       process.env.NEXT_PUBLIC_TICKET_MARKETPLACE_ADDRESS
     );
+    fetchBalance();
   }, []);
 
   async function deposit(collectionAddr: string, id: number) {
@@ -91,5 +93,47 @@ export function useMarketplace() {
     }
   }
 
-  return { supply, deposit, fetchSupply, buy };
+  async function fetchBalance() {
+    if (!marketplace) return;
+
+    try {
+      const response = await marketplace.balance(address);
+      setBalance(ethers.BigNumber.from(response).toNumber());
+      return response;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function withdrawBalance() {
+    if (!marketplace) return;
+    const toastId = toast.loading('Chargement...');
+
+    try {
+      const response = await marketplace.withdrawBalance();
+      toast.update(toastId, {
+        render: 'Withdraw success',
+        type: 'success',
+        isLoading: false,
+      });
+      return response;
+    } catch (error) {
+      console.error(error);
+      toast.update(toastId, {
+        render: "Une erreur s'est produite",
+        type: 'error',
+        isLoading: false,
+      });
+    }
+  }
+
+  return {
+    supply,
+    deposit,
+    fetchSupply,
+    buy,
+    withdrawBalance,
+    fetchBalance,
+    balance,
+  };
 }
