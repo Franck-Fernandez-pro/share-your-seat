@@ -1,5 +1,5 @@
 import { FC, useEffect, useState } from 'react';
-import { useCollection, useInput } from '@/hooks';
+import { useCollection, useInput, useMarketplace } from '@/hooks';
 import { toast } from 'react-toastify';
 
 interface Props {
@@ -12,7 +12,8 @@ interface Props {
 const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
   const { props: amountField, setValue: setAmount } = useInput<number>(0);
   const { props: toField, setValue: setToField } = useInput<string>('');
-  const { transfer } = useCollection(addr);
+  const { transfer, setApprovalForAll } = useCollection(addr);
+  const { deposit } = useMarketplace();
   const [data, setData] = useState({
     name: '',
     description: '',
@@ -51,6 +52,11 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
     await transfer(toField.value, parseInt(id), amountField.value);
     setAmount(0);
     setToField('');
+  }
+
+  async function handleDeposit() {
+    await setApprovalForAll();
+    await deposit(addr, parseInt(id));
   }
 
   return balance > 0 ? (
@@ -99,6 +105,9 @@ const MyTicketCard: FC<Props> = ({ id, addr, uri, balance }) => {
             </button>
           </div>
         </div>
+        <button className="btn btn-primary btn-sm mt-3" onClick={handleDeposit}>
+          Mettre en vente 1 ticket
+        </button>
       </div>
     </div>
   ) : (
