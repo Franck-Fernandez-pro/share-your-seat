@@ -224,6 +224,30 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
       console.error(error);
     }
   }
+  async function setApprovalForAll() {
+    if (!collection) return;
+    const toastId = toast.loading('Chargement...');
+    try {
+      const response = await collection.setApprovalForAll(
+        process.env.NEXT_PUBLIC_TICKET_MARKETPLACE_ADDRESS,
+        true
+      );
+
+      toast.update(toastId, {
+        render: 'Approval réussi',
+        type: 'success',
+        isLoading: false,
+      });
+      return response;
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Une erreur s'est produite",
+        type: 'error',
+        isLoading: false,
+      });
+      console.error(error);
+    }
+  }
 
   return {
     state,
@@ -232,18 +256,8 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
     getAvailableTicket,
     getCollectionBalance,
     withdraw,
-    // ticketsLength: ticketsLength
-    //   ? ethers.BigNumber.from(ticketsLength).toNumber()
-    //   : 0,
-    // name: name as string,
     getBalanceOf,
-    // balanceOfBatch: balanceOfBatch
-    //   ? // @ts-ignore
-    //     (balanceOfBatch.map((b: any) =>
-    //       ethers.BigNumber.from(b).toNumber()
-    //     ) as number[])
-    //   : [],
     transfer,
-    // owner: owner as string,
+    setApprovalForAll,
   };
 }
