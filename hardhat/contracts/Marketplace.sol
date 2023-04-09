@@ -16,7 +16,7 @@ contract Marketplace is ReentrancyGuard {
     }
 
     // Collection => token id => SupplyObject
-    mapping(address => mapping(uint256 => SupplyObject)) public supply;
+    mapping(address => mapping(uint256 => SupplyObject)) private supply;
 
     // Users balance
     mapping(address => uint256) public balance;
@@ -36,6 +36,19 @@ contract Marketplace is ReentrancyGuard {
     event Buy(address to, address from, TicketSFT collection, uint256 id);
 
     // :::::::::::::::::::::: FUNCTIONS ::::::::::::::::::::::
+    /// Getter that return available tickets and price for a collection
+    /// @param _collection TicketSFT collection searched
+    /// @param _id Token id to looking for
+    /// @return available uint of available tickets
+    /// @return price ticket price
+    function getSupply(
+        address _collection,
+        uint256 _id
+    ) external view returns (uint256 available, uint256 price) {
+        available = supply[_collection][_id].addrs.length;
+        price = supply[_collection][_id].price;
+    }
+
     /// Deposit 1155 token
     /// @param _collection TicketSFT collection searched
     /// @param _from Seller address
@@ -69,6 +82,7 @@ contract Marketplace is ReentrancyGuard {
         // Transfer 1155 from seller to buyer
         _collection.safeTransferFrom(sellerAddr, msg.sender, _id, 1, "");
         supply[address(_collection)][_id].addrs.pop();
+        balance[sellerAddr] = msg.value;
         emit Buy(msg.sender, sellerAddr, _collection, _id);
     }
 
