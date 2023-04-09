@@ -1,5 +1,5 @@
 import { FC, MouseEvent, useEffect, useState } from 'react';
-import { useCollection, useInput } from '@/hooks';
+import { useCollection, useInput, useMarketplace } from '@/hooks';
 
 interface Props {
   uri: string;
@@ -15,6 +15,7 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
     getAvailableTicket,
     state: { ticketPrice, availableTickets },
   } = useCollection(addr);
+  const { fetchSupply, supply, buy } = useMarketplace();
   const [data, setData] = useState({
     name: '',
     description: '',
@@ -31,6 +32,7 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
     fetchMetadata();
     getTicketPrice(parseInt(id));
     getAvailableTicket(parseInt(id));
+    fetchSupply(addr, parseInt(id));
   }, []);
 
   async function fetchMetadata() {
@@ -48,6 +50,11 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
         parseInt(amountProps.value),
         ticketPrice
       );
+  }
+
+  async function handleBuy(e: MouseEvent<HTMLButtonElement>) {
+    await buy(addr, parseInt(e.currentTarget.id), supply.price);
+    await fetchSupply(addr, parseInt(id));
   }
 
   return data.name ? (
@@ -90,6 +97,33 @@ const TicketCard: FC<Props> = ({ uri = '', onMint, id, addr }) => {
             </button>
           </div>
         </div>
+
+        {supply.available > 0 ? (
+          <>
+            <div className="divider mb-0" />
+            <div className="flex flex-row items-center">
+              <div className="flex flex-col">
+                <span className="label-text mb-2 text-lg font-bold">
+                  Place d'occasion
+                </span>
+                <span className="label-text-alt">
+                  {supply.available} places disponibles
+                </span>
+                <span className="label-text-alt">{supply.price} Wei/place</span>
+              </div>
+
+              <button
+                className="btn btn-primary btn-sm ml-auto max-w-[100px] self-end"
+                onClick={handleBuy}
+                id={id}
+              >
+                Acheter 1 place
+              </button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   ) : (
