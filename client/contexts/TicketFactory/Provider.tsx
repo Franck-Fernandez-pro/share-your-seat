@@ -6,11 +6,7 @@ import {
   initialState,
   ActionType,
 } from './index';
-import {
-  useContract,
-  useContractEvent,
-  useSigner,
-} from 'wagmi';
+import { useContract, useContractEvent, useSigner } from 'wagmi';
 import artifact from '../../contracts/TicketFactory.json';
 import { TicketCreated } from '@/types/context';
 import { toast } from 'react-toastify';
@@ -66,7 +62,6 @@ export function Provider({ children }: { children: ReactNode }) {
       return response;
     } catch (error) {
       console.error(error);
-      toast.error("Une erreur s'est produite");
     }
   }
 
@@ -114,6 +109,7 @@ export function Provider({ children }: { children: ReactNode }) {
     ) => {
       if (!ticketFactory) return;
 
+      const toastId = toast.loading('Chargement...');
       try {
         const response = await ticketFactory.deployTicket(
           eventName,
@@ -122,10 +118,18 @@ export function Provider({ children }: { children: ReactNode }) {
           availableTickets
         );
         await response.wait();
-        toast.success('Événements créé');
+        toast.update(toastId, {
+          render: 'Événement créé',
+          type: 'success',
+          isLoading: false,
+        });
         return response;
       } catch (error) {
-        toast.error("Une erreur s'est produite");
+        toast.update(toastId, {
+          render: "Une erreur s'est produite",
+          type: 'error',
+          isLoading: false,
+        });
       }
     },
     [ticketFactory]
@@ -140,7 +144,6 @@ export function Provider({ children }: { children: ReactNode }) {
         return response;
       } catch (error) {
         console.error(error);
-        toast.error("Une erreur s'est produite");
       }
     },
     [ticketFactory]

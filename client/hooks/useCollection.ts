@@ -102,7 +102,7 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
 
   async function mint(id: number, amount: number, price: number) {
     if (!collection) return;
-
+    const toastId = toast.loading('Chargement...');
     try {
       const response = await collection.mint(address, id, amount, {
         value: ethers.utils.parseUnits(`${price * amount}`, 'wei'),
@@ -110,11 +110,20 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
 
       await response.wait();
 
+      toast.update(toastId, {
+        render: 'Ticket mint',
+        type: 'success',
+        isLoading: false,
+      });
       toast.success('Ticket mint');
       return response;
     } catch (error) {
       console.error(error);
-      toast.error("Une erreur s'est produite");
+      toast.update(toastId, {
+        render: "Une erreur s'est produite",
+        type: 'error',
+        isLoading: false,
+      });
     }
   }
 
@@ -184,15 +193,24 @@ export function useCollection(addr: string, option?: { ids?: number[] }) {
 
   async function withdraw() {
     if (!collection) return;
-
+    const toastId = toast.loading('Chargement...');
     try {
       const response = await collection.withdraw(address);
       getCollectionBalance();
 
-      toast.success('Withdraw réussi');
+      toast.update(toastId, {
+        render: 'Withdraw réussi',
+        type: 'success',
+        isLoading: false,
+      });
+
       return response;
     } catch (error) {
-      toast.error("Une erreur s'est produite");
+      toast.update(toastId, {
+        render: "Une erreur s'est produite",
+        type: 'error',
+        isLoading: false,
+      });
       console.error(error);
     }
   }
