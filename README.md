@@ -1,6 +1,6 @@
 # Share Your Seat
 
-- Video:
+- Video: https://drive.google.com/file/d/19e_71eay-Wdk2N3Cw__KUSM8b6QkxSG6/view?usp=share_link
 - App: https://share-your-seat.vercel.app/
 - TicketFactory (Mumbai): 0x14C6208225D2407fE4b6f223b23CEfDe4E318Bfd
 - Marketplace (Mumbai): 0x23C022ceF4bbA9D640b25aDF62118ecc99dB12b3
@@ -27,6 +27,16 @@ npm run dev
 NEXT_PUBLIC_TICKET_FACTORY_ADDRESS=0x...
 NEXT_PUBLIC_TICKET_MARKETPLACE_ADDRESS=0x...
 ALCHEMY_ID=...
+```
+
+## Hardhat
+
+### Env file (`./hardhat/.env`)
+
+```env
+MUMBAI_ID=...
+PRIVATE_KEY=0X...
+REPORT_GAS=true
 ```
 
 ## Tests
@@ -57,3 +67,13 @@ npx hardhat test
 - [Vercel](https://vercel.com/home)
 - [Hardhat](https://hardhat.org/)
 - [React-toastify](fkhadra.github.io/react-toastify)
+
+## Schémas
+
+### TicketFactory.sol & TicketSFT.sol
+
+![image1](./image1.png)
+
+### Marketplace.sol
+
+![image2](./image2.png)
