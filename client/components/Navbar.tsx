@@ -18,7 +18,7 @@ const Navbar: FC<Props> = ({}) => {
           Share Your Seat
         </Link>
       </div>
-      <div className="navbar-center hidden lg:flex">
+      <div className="navbar-center flex">
         <ul className="menu menu-horizontal px-1">
           <li>
             <Link href="/event">Événements</Link>

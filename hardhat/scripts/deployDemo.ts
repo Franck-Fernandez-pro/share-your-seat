@@ -29,8 +29,7 @@ async function main() {
     ticketPrices,
     ticketSupplies
   );
-  const tx = await response.wait();
-  console.log('tx:', tx);
+  await response.wait();
 
   const Marketplace = await ethers.getContractFactory('Marketplace');
   const marketplace = await Marketplace.deploy();
